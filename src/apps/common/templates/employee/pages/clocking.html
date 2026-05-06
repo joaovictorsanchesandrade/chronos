@@ -58,7 +58,7 @@
 
         .container {
             width: min(100%, 1040px);
-            min-height: 640px;
+            min-height: 700px;
             display: grid;
             grid-template-columns: minmax(300px, 0.9fr) minmax(360px, 1.1fr);
             overflow: hidden;
@@ -102,7 +102,7 @@
             color: var(--brand);
             font-size: 12px;
             font-weight: 850;
-            letter-spacing: 0.08em;
+            letter-spacing: 0;
             text-transform: uppercase;
         }
 
@@ -356,7 +356,11 @@
 
         .work-view {
             display: grid;
-            gap: 24px;
+            gap: 20px;
+        }
+
+        .work-view .content-header {
+            margin-bottom: 0;
         }
 
         .status-pill {
@@ -373,6 +377,168 @@
             font-weight: 850;
         }
 
+        .status-pill.idle {
+            background: #f8fafc;
+            color: #475467;
+            border-color: var(--line);
+        }
+
+        .status-pill.idle .status-dot {
+            background: #94a3b8;
+            box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.14);
+        }
+
+        .status-pill.break {
+            background: #fffbeb;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+
+        .status-pill.break .status-dot {
+            background: var(--amber);
+            box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.14);
+        }
+
+        .session-card {
+            display: grid;
+            gap: 16px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background:
+                linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        }
+
+        .session-card.empty {
+            background: #fff;
+            border-style: dashed;
+        }
+
+        .session-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .session-kicker {
+            margin-bottom: 4px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 850;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .session-title {
+            color: var(--ink);
+            font-size: 19px;
+            font-weight: 850;
+            line-height: 1.2;
+        }
+
+        .session-duration {
+            min-width: 74px;
+            color: var(--brand);
+            font-size: 24px;
+            font-weight: 900;
+            line-height: 1;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .session-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .session-stat {
+            min-height: 66px;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .session-stat span {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .session-stat strong {
+            display: block;
+            margin-top: 5px;
+            color: var(--ink);
+            font-size: 15px;
+            font-weight: 850;
+            line-height: 1.25;
+        }
+
+        .timeline {
+            display: grid;
+            gap: 10px;
+            max-height: 168px;
+            overflow: auto;
+            list-style: none;
+            padding-right: 4px;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 12px 1fr auto;
+            align-items: start;
+            gap: 10px;
+        }
+
+        .timeline-marker {
+            width: 10px;
+            height: 10px;
+            margin-top: 6px;
+            border-radius: 50%;
+            background: var(--line-strong);
+        }
+
+        .timeline-item.entry .timeline-marker {
+            background: var(--green);
+        }
+
+        .timeline-item.break-start .timeline-marker {
+            background: var(--amber);
+        }
+
+        .timeline-item.break-end .timeline-marker {
+            background: var(--blue);
+        }
+
+        .timeline-item.exit .timeline-marker {
+            background: var(--rose);
+        }
+
+        .timeline-title {
+            display: block;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 850;
+            line-height: 1.2;
+        }
+
+        .timeline-ip,
+        .timeline-time,
+        .timeline-empty {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .timeline-time {
+            padding-top: 1px;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -380,7 +546,7 @@
         }
 
         .btn-action {
-            min-height: 132px;
+            min-height: 112px;
             padding: 16px;
             display: grid;
             align-content: space-between;
@@ -394,6 +560,28 @@
         .btn-action:hover {
             transform: translateY(-2px);
             box-shadow: 0 16px 30px rgba(16, 24, 40, 0.1);
+        }
+
+        .btn-action:disabled {
+            cursor: not-allowed;
+            background: #f8fafc;
+            color: #98a2b3;
+            border-color: var(--line);
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-action:disabled .btn-subtitle,
+        .btn-action:disabled .action-code {
+            color: #98a2b3;
+        }
+
+        .btn-action:disabled .action-code {
+            background: #eef2f6;
+        }
+
+        .btn-action:disabled .action-line {
+            background: var(--line-strong);
         }
 
         .btn-action.entry:hover {
@@ -626,6 +814,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .session-stats {
+                grid-template-columns: 1fr;
+            }
+
             .btn-action {
                 min-height: 112px;
             }
@@ -718,14 +910,39 @@
                     <p class="eyebrow">Jornada</p>
                     <h2>Bater ponto</h2>
                 </div>
-                <span class="status-pill">
+                <span id="session-status" class="status-pill idle">
                     <span class="status-dot" aria-hidden="true"></span>
-                    Pronto
+                    <span id="session-status-text">Sem jornada</span>
                 </span>
             </div>
 
+            <section id="session-card" class="session-card empty" aria-label="Jornada atual">
+                <div class="session-card-header">
+                    <div>
+                        <p class="session-kicker">Jornada atual</p>
+                        <strong id="session-title" class="session-title">Nenhuma jornada iniciada</strong>
+                    </div>
+                    <strong id="session-duration" class="session-duration">00h00</strong>
+                </div>
+
+                <div class="session-stats">
+                    <div class="session-stat">
+                        <span>Início</span>
+                        <strong id="session-start">--:--</strong>
+                    </div>
+                    <div class="session-stat">
+                        <span>Último registro</span>
+                        <strong id="session-last">Nenhum</strong>
+                    </div>
+                </div>
+
+                <ol id="session-timeline" class="timeline">
+                    <li class="timeline-empty">Nenhum registro na jornada atual.</li>
+                </ol>
+            </section>
+
             <div class="grid">
-                <button class="btn-action entry" type="button" onclick="clocking('entry')">
+                <button class="btn-action entry" type="button" data-record-type="entry" onclick="clocking('entry')">
                     <span class="action-top">
                         <span class="action-code">EN</span>
                         <span class="action-line" aria-hidden="true"></span>
@@ -735,7 +952,7 @@
                         <span class="btn-subtitle">Iniciar turno</span>
                     </span>
                 </button>
-                <button class="btn-action break-start" type="button" onclick="clocking('break_start')">
+                <button class="btn-action break-start" type="button" data-record-type="break_start" onclick="clocking('break_start')">
                     <span class="action-top">
                         <span class="action-code">IN</span>
                         <span class="action-line" aria-hidden="true"></span>
@@ -745,7 +962,7 @@
                         <span class="btn-subtitle">Pausar jornada</span>
                     </span>
                 </button>
-                <button class="btn-action break-end" type="button" onclick="clocking('break_end')">
+                <button class="btn-action break-end" type="button" data-record-type="break_end" onclick="clocking('break_end')">
                     <span class="action-top">
                         <span class="action-code">VO</span>
                         <span class="action-line" aria-hidden="true"></span>
@@ -755,7 +972,7 @@
                         <span class="btn-subtitle">Retomar turno</span>
                     </span>
                 </button>
-                <button class="btn-action exit" type="button" onclick="clocking('exit')">
+                <button class="btn-action exit" type="button" data-record-type="exit" onclick="clocking('exit')">
                     <span class="action-top">
                         <span class="action-code">SA</span>
                         <span class="action-line" aria-hidden="true"></span>
@@ -781,8 +998,32 @@
     const businessUUID = "{{ public_uuid|escapejs }}";
     const PROFILE_URL = "{% url 'api-employee:me' %}";
     const CLOCKING_URL = "{% url 'api-employee:work-sessions' %}";
+    const RECORD_TYPES = {
+        entry: {
+            label: "Entrada",
+            timeline: "Entrada registrada",
+            className: "entry",
+        },
+        break_start: {
+            label: "Intervalo",
+            timeline: "Intervalo iniciado",
+            className: "break-start",
+        },
+        break_end: {
+            label: "Volta",
+            timeline: "Retorno registrado",
+            className: "break-end",
+        },
+        exit: {
+            label: "Saída",
+            timeline: "Saída registrada",
+            className: "exit",
+        },
+    };
 
     let employeeToken = localStorage.getItem("employeeToken");
+    let currentSession = null;
+    let isClocking = false;
 
     function getCSRFToken() {
         return document.querySelector("[name=csrfmiddlewaretoken]")?.value || "";
@@ -817,24 +1058,186 @@
     }
 
     async function requestAPI(url, options = {}) {
+        const { allowNotFound = false, ...fetchOptions } = options;
         const response = await fetch(url, {
-            ...options,
+            ...fetchOptions,
             credentials: "same-origin",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": getCSRFToken(),
                 "employee-token": employeeToken,
-                ...(options.headers || {}),
+                ...(fetchOptions.headers || {}),
             },
         });
 
         const data = await response.json().catch(() => null);
+
+        if (allowNotFound && response.status === 404) {
+            return null;
+        }
 
         if (!response.ok) {
             throw new Error(parseAPIError(data));
         }
 
         return data;
+    }
+
+    function getSessionRecords(session = currentSession) {
+        return [...(session?.time_records || [])].sort((a, b) => {
+            return new Date(a.registred_at) - new Date(b.registred_at);
+        });
+    }
+
+    function getLastRecord(session = currentSession) {
+        const records = getSessionRecords(session);
+        return records.length ? records[records.length - 1] : null;
+    }
+
+    function formatRecordTime(value) {
+        if (!value) return "--:--";
+
+        return new Intl.DateTimeFormat("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+        }).format(new Date(value));
+    }
+
+    function formatDuration(startAt) {
+        if (!startAt) return "00h00";
+
+        const diffInMinutes = Math.max(
+            0,
+            Math.floor((new Date() - new Date(startAt)) / 60000)
+        );
+        const hours = Math.floor(diffInMinutes / 60);
+        const minutes = diffInMinutes % 60;
+
+        return `${String(hours).padStart(2, "0")}h${String(minutes).padStart(2, "0")}`;
+    }
+
+    function setSessionStatus(type, text) {
+        const status = document.getElementById("session-status");
+        document.getElementById("session-status-text").textContent = text;
+        status.className = `status-pill ${type}`;
+    }
+
+    function renderSessionDuration() {
+        document.getElementById("session-duration").textContent = formatDuration(
+            currentSession?.start_at
+        );
+    }
+
+    function getEnabledRecordTypes(session = currentSession) {
+        const lastRecord = getLastRecord(session);
+
+        if (!session) return ["entry"];
+        if (lastRecord?.type === "break_start") return ["break_end"];
+        if (lastRecord?.type === "entry" || lastRecord?.type === "break_end") {
+            return ["break_start", "exit"];
+        }
+
+        return [];
+    }
+
+    function setActionAvailability() {
+        const enabledRecordTypes = getEnabledRecordTypes();
+        document.querySelectorAll("[data-record-type]").forEach((button) => {
+            button.disabled =
+                isClocking || !enabledRecordTypes.includes(button.dataset.recordType);
+        });
+    }
+
+    function renderTimeline(records) {
+        const timeline = document.getElementById("session-timeline");
+        timeline.replaceChildren();
+
+        if (!records.length) {
+            const empty = document.createElement("li");
+            empty.className = "timeline-empty";
+            empty.textContent = "Nenhum registro na jornada atual.";
+            timeline.appendChild(empty);
+            return;
+        }
+
+        records.forEach((record) => {
+            const recordType = RECORD_TYPES[record.type] || {
+                timeline: record.type,
+                className: "",
+            };
+            const item = document.createElement("li");
+            item.className = `timeline-item ${recordType.className}`;
+
+            const marker = document.createElement("span");
+            marker.className = "timeline-marker";
+            marker.setAttribute("aria-hidden", "true");
+
+            const copy = document.createElement("span");
+            const title = document.createElement("strong");
+            title.className = "timeline-title";
+            title.textContent = recordType.timeline;
+
+            const ip = document.createElement("span");
+            ip.className = "timeline-ip";
+            ip.textContent = record.client_ip ? `IP ${record.client_ip}` : "IP não informado";
+
+            const time = document.createElement("time");
+            time.className = "timeline-time";
+            time.dateTime = record.registred_at;
+            time.textContent = formatRecordTime(record.registred_at);
+
+            copy.append(title, ip);
+            item.append(marker, copy, time);
+            timeline.appendChild(item);
+        });
+    }
+
+    function renderCurrentSession() {
+        const card = document.getElementById("session-card");
+        const records = getSessionRecords();
+        const lastRecord = records.length ? records[records.length - 1] : null;
+        const lastRecordType = RECORD_TYPES[lastRecord?.type];
+
+        if (!currentSession) {
+            card.classList.add("empty");
+            document.getElementById("session-title").textContent = "Nenhuma jornada iniciada";
+            document.getElementById("session-start").textContent = "--:--";
+            document.getElementById("session-last").textContent = "Nenhum";
+            renderSessionDuration();
+            renderTimeline([]);
+            setSessionStatus("idle", "Sem jornada");
+            setActionAvailability();
+            return;
+        }
+
+        card.classList.remove("empty");
+        document.getElementById("session-title").textContent =
+            lastRecord?.type === "break_start"
+                ? "Intervalo em andamento"
+                : "Jornada em andamento";
+        document.getElementById("session-start").textContent = formatRecordTime(
+            currentSession.start_at
+        );
+        document.getElementById("session-last").textContent = lastRecord
+            ? `${lastRecordType?.label || lastRecord.type} às ${formatRecordTime(lastRecord.registred_at)}`
+            : "Nenhum";
+
+        renderSessionDuration();
+        renderTimeline(records);
+        setSessionStatus(
+            lastRecord?.type === "break_start" ? "break" : "",
+            lastRecord?.type === "break_start" ? "Em intervalo" : "Em jornada"
+        );
+        setActionAvailability();
+    }
+
+    async function loadCurrentSession() {
+        currentSession = await requestAPI(CLOCKING_URL, {
+            method: "GET",
+            allowNotFound: true,
+        });
+        renderCurrentSession();
+        return currentSession;
     }
 
     async function loginEmployee(event) {
@@ -884,6 +1287,7 @@
 
         setImage("employee-picture", employee.picture, "employee-initials");
         setImage("business-picture", employee.business?.picture, "business-initials");
+        await loadCurrentSession();
     }
 
     function setImage(id, url, fallbackId) {
@@ -913,6 +1317,8 @@
         document.getElementById("identity-section").classList.add("hidden");
         document.getElementById("login-section").classList.remove("hidden");
         document.getElementById("pin").value = "";
+        currentSession = null;
+        renderCurrentSession();
         showMessage("Sessão encerrada");
     }
 
@@ -932,25 +1338,37 @@
         document.getElementById("current-time").textContent = time;
         document.getElementById("today-date").textContent = date;
         document.getElementById("current-date").textContent = date;
+        renderSessionDuration();
     }
 
     async function clocking(type) {
+        if (isClocking) return;
+
+        isClocking = true;
+        setActionAvailability();
+
         try {
             await requestAPI(CLOCKING_URL, {
                 method: "POST",
                 body: JSON.stringify({ record_type: type }),
             });
+            await loadCurrentSession();
 
-            showMessage("Ponto registrado!");
+            showMessage(type === "exit" ? "Jornada finalizada!" : "Ponto registrado!");
         } catch (e) {
             showMessage(e.message, true);
+        } finally {
+            isClocking = false;
+            setActionAvailability();
         }
     }
 
     loadProfile().catch(() => {
         localStorage.removeItem("employeeToken");
         employeeToken = null;
+        currentSession = null;
         document.getElementById("identity-section").classList.add("hidden");
+        renderCurrentSession();
     });
     updateCurrentTime();
     setInterval(updateCurrentTime, 1000);
