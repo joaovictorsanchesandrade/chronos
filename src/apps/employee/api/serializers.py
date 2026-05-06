@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from apps.common.models import TimeRecordType, Employee, WorkSession, TimeRecord
+from apps.common.models import (
+    TimeRecordType,
+    Employee,
+    WorkSession,
+    TimeRecord,
+    Business,
+)
 from apps.employee.services import validate_time_record, InvalidTimeRecordException
 
 
@@ -15,14 +21,18 @@ class ClockingSerializer(serializers.Serializer):
         return attrs
 
 
+class BusinessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Business
+        fields = ("picture", "name", "summary")
+
+
 class EmployeeSerializer(serializers.ModelSerializer):
+    business = BusinessSerializer()
+
     class Meta:
         model = Employee
-        fields = (
-            "picture",
-            "register",
-            "name",
-        )
+        fields = ("picture", "register", "name", "business")
 
 
 class TimeRecordsSerializer(serializers.ModelSerializer):

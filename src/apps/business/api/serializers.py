@@ -53,6 +53,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         business = self.context["business"]
         return Employee.objects.create(business=business, **validated_data)
 
+
 class TimeRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeRecord
@@ -61,13 +62,10 @@ class TimeRecordSerializer(serializers.ModelSerializer):
             "ajusted_at",
             "adjustment_reason",
             "client_ip",
-            "registred_at"
+            "registred_at",
         )
-        read_only_fields = (
-            "type",
-            "client_ip",
-            "registred_at"    
-        )
+        read_only_fields = ("type", "client_ip", "registred_at")
+
 
 class WorkSessionSerializer(serializers.ModelSerializer):
     time_records = TimeRecordSerializer(many=True)
@@ -82,12 +80,12 @@ class WorkSessionSerializer(serializers.ModelSerializer):
             "trusted",
             "created_at",
             "updated_at",
-            "time_records"
+            "time_records",
         )
         read_only_fields = (
             "start_at",
             "end_at",
             "is_edited",
             "created_at",
-            "updated_at"
+            "updated_at",
         )

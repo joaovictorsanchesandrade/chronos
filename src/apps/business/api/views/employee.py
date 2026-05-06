@@ -1,5 +1,8 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView
+from rest_framework.generics import (
+    RetrieveUpdateDestroyAPIView,
+    ListCreateAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 from apps.common.api.pagination import DefaultPageNumberPagination
 from apps.common.models import Employee, Business
@@ -43,4 +46,3 @@ class EmployeeRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
     def perform_destroy(self, instance: Employee):
         instance.user_delete()
-
