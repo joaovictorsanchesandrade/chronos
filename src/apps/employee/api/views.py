@@ -35,9 +35,13 @@ class WorkSessionView(APIView):
     def get(self, request: HttpRequest):
         work_session = get_current_work_session(employee=request.employee)
         if work_session:
-            serializer = WorkSessionSerializer(work_session, context={"request": request})
+            serializer = WorkSessionSerializer(
+                work_session, context={"request": request}
+            )
             return Response(serializer.data)
-        return Response({"detail": _("Não encotramos nenhuma jornada iniciada")}, status=404)
+        return Response(
+            {"detail": _("Não encotramos nenhuma jornada iniciada")}, status=404
+        )
 
     def post(self, request: HttpRequest):
         serializer = ClockingSerializer(

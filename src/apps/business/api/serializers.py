@@ -16,6 +16,7 @@ class BusinessSerializer(serializers.ModelSerializer):
             "picture",
             "allowed_ips",
             "all_network",
+            "short_link",
             "name",
             "summary",
             "description",
@@ -23,7 +24,7 @@ class BusinessSerializer(serializers.ModelSerializer):
             "created_at",
             "owner",
         )
-        read_only_fields = ("public_uuid", "updated_at", "created_at")
+        read_only_fields = ("public_uuid", "updated_at", "created_at", "short_link")
 
 
 class EmployeeSerializer(serializers.ModelSerializer):

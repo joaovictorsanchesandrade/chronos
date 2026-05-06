@@ -17,9 +17,15 @@ def upload_photo(instance: models.Model, filename: str) -> str:
     return f"{class_name}/pictures/{filename}"
 
 
-def random_code(length: int = 5) -> str:
-    """Generates a random key."""
+def random_pin(length: int = 5) -> str:
+    """Generates a random pin."""
     return "".join(random.choice(string.digits) for _ in range(length))
+
+
+def random_code(length: int = 8) -> str:
+    """Generates a random alphanumeric code"""
+    alphabet = string.ascii_letters + string.digits
+    return "".join(random.choice(alphabet) for _ in range(length))
 
 
 class TimeRecordType(models.TextChoices):
@@ -60,6 +66,7 @@ class BaseModel(models.Model):
             old = type(self).objects.filter(pk=self.pk).first()
             if old and old.picture and old.picture != self.picture:
                 old.picture.delete(save=False)
+
         return super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -90,6 +97,7 @@ class Business(BaseModel):
         db_index=True,
         verbose_name=_("proprietário"),
     )
+    short_link = models.CharField(null=True, blank=True)
 
     class Meta:
         db_table = "core_businesses"
@@ -100,6 +108,17 @@ class Business(BaseModel):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.short_link:
+            while 1:
+                short_link = random_code()
+                queryset = Business.objects.filter(short_link=short_link)
+                if queryset.exists():
+                    continue
+                self.short_link = short_link
+                break
+        return super().save(*args, **kwargs)
 
     def ip_is_allowed(self, ip: str) -> bool:
         """Check if the employee has permission to access the site from that IP address."""
@@ -118,7 +137,7 @@ class Employee(BaseModel):
     objects = EmployeeQuerySet.as_manager()
 
     register = models.CharField(_("registro"), max_length=256)
-    pin = models.CharField(_("PIN"), default=random_code, max_length=20)
+    pin = models.CharField(_("PIN"), default=random_pin, max_length=20)
     name = models.CharField(_("nome"), max_length=256)
     business = models.ForeignKey(
         Business,
