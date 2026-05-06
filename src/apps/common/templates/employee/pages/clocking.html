@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ponto do Funcionário</title>
+
+    <style>
+        :root {
+            --page: #f5f7fb;
+            --surface: #ffffff;
+            --surface-soft: #f8fafc;
+            --ink: #101828;
+            --muted: #667085;
+            --line: #dde5f0;
+            --line-strong: #cbd5e1;
+            --brand: #0f766e;
+            --brand-dark: #115e59;
+            --blue: #2563eb;
+            --green: #16a34a;
+            --amber: #d97706;
+            --rose: #e11d48;
+            --success: #15803d;
+            --success-bg: #dcfce7;
+            --danger: #b91c1c;
+            --danger-bg: #fee2e2;
+            --shadow: 0 24px 70px rgba(16, 24, 40, 0.14);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--ink);
+            background-color: var(--page);
+            background-image:
+                linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+            background-size: 42px 42px;
+            display: grid;
+            place-items: center;
+            padding: 28px;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .container {
+            width: min(100%, 1040px);
+            min-height: 640px;
+            display: grid;
+            grid-template-columns: minmax(300px, 0.9fr) minmax(360px, 1.1fr);
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid rgba(203, 213, 225, 0.9);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .identity-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 34px;
+            padding: 34px;
+            background:
+                linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border-right: 1px solid var(--line);
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: var(--brand);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 900;
+            box-shadow: inset 0 -10px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .eyebrow {
+            color: var(--brand);
+            font-size: 12px;
+            font-weight: 850;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin-top: 2px;
+            font-size: 25px;
+            line-height: 1.08;
+            letter-spacing: 0;
+        }
+
+        h2 {
+            color: var(--ink);
+            font-size: 32px;
+            line-height: 1.08;
+            letter-spacing: 0;
+        }
+
+        h3 {
+            color: var(--ink);
+            font-size: 15px;
+            line-height: 1.3;
+        }
+
+        p {
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .time-board {
+            padding: 26px 0;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .time-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 750;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            flex: 0 0 auto;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.12);
+        }
+
+        .hero-time {
+            display: block;
+            margin-top: 12px;
+            color: var(--ink);
+            font-size: 72px;
+            font-weight: 850;
+            letter-spacing: 0;
+            line-height: 0.95;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .today-date {
+            display: block;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .identity-section {
+            display: grid;
+            gap: 22px;
+        }
+
+        .employee-summary {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .avatar,
+        .business-logo {
+            width: 64px;
+            height: 64px;
+            flex: 0 0 auto;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #e0f2fe;
+            color: #075985;
+            border: 1px solid #bae6fd;
+        }
+
+        .avatar {
+            width: 74px;
+            height: 74px;
+        }
+
+        .avatar img,
+        .business-logo img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .avatar-fallback,
+        .business-fallback {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .employee-register {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            margin-top: 8px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            background: #ecfeff;
+            color: #0e7490;
+            font-size: 13px;
+            font-weight: 850;
+        }
+
+        .business {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 22px;
+            border-top: 1px solid var(--line);
+        }
+
+        .business-logo {
+            width: 52px;
+            height: 52px;
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+
+        .business p {
+            margin-top: 2px;
+            font-size: 13px;
+        }
+
+        .content-panel {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 44px 44px 96px;
+            background: #fff;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .content-header p {
+            margin-bottom: 8px;
+        }
+
+        .header-meta {
+            min-width: max-content;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .form {
+            display: grid;
+            gap: 18px;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            color: #344054;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        input {
+            width: 100%;
+            min-height: 52px;
+            padding: 14px 15px;
+            border: 1px solid var(--line-strong);
+            border-radius: 8px;
+            background: var(--surface-soft);
+            color: var(--ink);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        input::placeholder {
+            color: #98a2b3;
+        }
+
+        input:focus {
+            border-color: var(--brand);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.13);
+        }
+
+        .btn-primary,
+        .btn-ghost,
+        .btn-action {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .btn-primary {
+            min-height: 54px;
+            margin-top: 4px;
+            background: var(--brand);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 850;
+            box-shadow: 0 14px 28px rgba(15, 118, 110, 0.22);
+        }
+
+        .btn-primary:hover {
+            background: var(--brand-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active,
+        .btn-ghost:active,
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        .work-view {
+            display: grid;
+            gap: 24px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 32px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            font-size: 13px;
+            font-weight: 850;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .btn-action {
+            min-height: 132px;
+            padding: 16px;
+            display: grid;
+            align-content: space-between;
+            gap: 16px;
+            text-align: left;
+            background: #fff;
+            color: var(--ink);
+            border-color: var(--line);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(16, 24, 40, 0.1);
+        }
+
+        .btn-action.entry:hover {
+            border-color: rgba(22, 163, 74, 0.45);
+        }
+
+        .btn-action.break-start:hover {
+            border-color: rgba(217, 119, 6, 0.45);
+        }
+
+        .btn-action.break-end:hover {
+            border-color: rgba(37, 99, 235, 0.45);
+        }
+
+        .btn-action.exit:hover {
+            border-color: rgba(225, 29, 72, 0.45);
+        }
+
+        .action-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .action-code {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 0;
+        }
+
+        .entry .action-code {
+            background: #dcfce7;
+            color: var(--green);
+        }
+
+        .break-start .action-code {
+            background: #fef3c7;
+            color: var(--amber);
+        }
+
+        .break-end .action-code {
+            background: #dbeafe;
+            color: var(--blue);
+        }
+
+        .exit .action-code {
+            background: #ffe4e6;
+            color: var(--rose);
+        }
+
+        .action-line {
+            width: 32px;
+            height: 3px;
+            border-radius: 8px;
+            background: var(--line-strong);
+        }
+
+        .entry .action-line {
+            background: var(--green);
+        }
+
+        .break-start .action-line {
+            background: var(--amber);
+        }
+
+        .break-end .action-line {
+            background: var(--blue);
+        }
+
+        .exit .action-line {
+            background: var(--rose);
+        }
+
+        .btn-title {
+            display: block;
+            font-size: 20px;
+            font-weight: 850;
+            line-height: 1.1;
+        }
+
+        .btn-subtitle {
+            display: block;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .session-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+        }
+
+        .session-footer p {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .btn-ghost {
+            width: auto;
+            min-height: 42px;
+            padding: 10px 16px;
+            background: #fff;
+            color: #344054;
+            border-color: var(--line-strong);
+            font-size: 14px;
+            font-weight: 850;
+        }
+
+        .btn-ghost:hover {
+            background: var(--surface-soft);
+            border-color: #94a3b8;
+        }
+
+        .message {
+            position: absolute;
+            left: 44px;
+            right: 44px;
+            bottom: 28px;
+            min-height: 44px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 850;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+        }
+
+        .message:not(:empty) {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .success {
+            color: var(--success);
+            background: var(--success-bg);
+            border: 1px solid #bbf7d0;
+        }
+
+        .error {
+            color: var(--danger);
+            background: var(--danger-bg);
+            border: 1px solid #fecaca;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 860px) {
+            body {
+                padding: 18px;
+                place-items: stretch;
+            }
+
+            .container {
+                min-height: auto;
+                grid-template-columns: 1fr;
+            }
+
+            .identity-panel {
+                gap: 22px;
+                padding: 26px;
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .time-board {
+                padding: 18px 0;
+            }
+
+            .hero-time {
+                font-size: 48px;
+            }
+
+            .content-panel {
+                padding: 28px 28px 88px;
+                min-height: 520px;
+            }
+
+            .message {
+                left: 28px;
+                right: 28px;
+                bottom: 20px;
+            }
+        }
+
+        @media (max-width: 540px) {
+            body {
+                padding: 12px;
+            }
+
+            .identity-panel,
+            .content-panel {
+                padding: 22px;
+            }
+
+            .brand-row,
+            .employee-summary,
+            .business,
+            .content-header,
+            .session-footer {
+                align-items: flex-start;
+            }
+
+            .content-header,
+            .session-footer {
+                flex-direction: column;
+            }
+
+            h2 {
+                font-size: 27px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-action {
+                min-height: 112px;
+            }
+
+            .message {
+                position: static;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <aside class="identity-panel">
+        <div class="brand-row">
+            <div class="brand-mark">C</div>
+            <div>
+                <p class="eyebrow">Chronos</p>
+                <h1>Ponto digital</h1>
+            </div>
+        </div>
+
+        <div class="time-board">
+            <div class="time-label">
+                <span>Agora</span>
+                <span class="status-dot" aria-hidden="true"></span>
+            </div>
+            <strong id="hero-time" class="hero-time">--:--</strong>
+            <span id="today-date" class="today-date"></span>
+        </div>
+
+        <section id="identity-section" class="identity-section hidden" aria-label="Dados do colaborador">
+            <div class="employee-summary">
+                <div class="avatar">
+                    <img id="employee-picture" class="hidden" alt="Foto do funcionário" />
+                    <span id="employee-initials" class="avatar-fallback">CH</span>
+                </div>
+                <div>
+                    <h3 id="employee-name"></h3>
+                    <p id="employee-register" class="employee-register"></p>
+                </div>
+            </div>
+
+            <div class="business">
+                <div class="business-logo">
+                    <img id="business-picture" class="hidden" alt="Logo da empresa" />
+                    <span id="business-initials" class="business-fallback">CO</span>
+                </div>
+                <div>
+                    <h3 id="business-name"></h3>
+                    <p id="business-summary"></p>
+                </div>
+            </div>
+        </section>
+    </aside>
+
+    <main class="content-panel">
+        <!-- LOGIN -->
+        <section id="login-section">
+            <div class="content-header">
+                <div>
+                    <p class="eyebrow">Acesso do colaborador</p>
+                    <h2>Entre para registrar</h2>
+                </div>
+                <span id="current-time" class="header-meta">--:--</span>
+            </div>
+
+            <form class="form" onsubmit="loginEmployee(event)">
+                {% csrf_token %}
+
+                <div class="field">
+                    <label for="register">Matrícula</label>
+                    <input id="register" name="register" type="text" autocomplete="username" placeholder="Digite sua matrícula" />
+                </div>
+
+                <div class="field">
+                    <label for="pin">PIN</label>
+                    <input id="pin" name="pin" type="password" autocomplete="current-password" placeholder="Digite seu PIN" />
+                </div>
+
+                <button class="btn-primary" type="submit">Entrar</button>
+            </form>
+        </section>
+
+        <!-- PERFIL -->
+        <section id="profile-section" class="work-view hidden">
+            <div class="content-header">
+                <div>
+                    <p class="eyebrow">Jornada</p>
+                    <h2>Bater ponto</h2>
+                </div>
+                <span class="status-pill">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    Pronto
+                </span>
+            </div>
+
+            <div class="grid">
+                <button class="btn-action entry" type="button" onclick="clocking('entry')">
+                    <span class="action-top">
+                        <span class="action-code">EN</span>
+                        <span class="action-line" aria-hidden="true"></span>
+                    </span>
+                    <span>
+                        <span class="btn-title">Entrada</span>
+                        <span class="btn-subtitle">Iniciar turno</span>
+                    </span>
+                </button>
+                <button class="btn-action break-start" type="button" onclick="clocking('break_start')">
+                    <span class="action-top">
+                        <span class="action-code">IN</span>
+                        <span class="action-line" aria-hidden="true"></span>
+                    </span>
+                    <span>
+                        <span class="btn-title">Intervalo</span>
+                        <span class="btn-subtitle">Pausar jornada</span>
+                    </span>
+                </button>
+                <button class="btn-action break-end" type="button" onclick="clocking('break_end')">
+                    <span class="action-top">
+                        <span class="action-code">VO</span>
+                        <span class="action-line" aria-hidden="true"></span>
+                    </span>
+                    <span>
+                        <span class="btn-title">Volta</span>
+                        <span class="btn-subtitle">Retomar turno</span>
+                    </span>
+                </button>
+                <button class="btn-action exit" type="button" onclick="clocking('exit')">
+                    <span class="action-top">
+                        <span class="action-code">SA</span>
+                        <span class="action-line" aria-hidden="true"></span>
+                    </span>
+                    <span>
+                        <span class="btn-title">Saída</span>
+                        <span class="btn-subtitle">Encerrar dia</span>
+                    </span>
+                </button>
+            </div>
+
+            <div class="session-footer">
+                <p id="current-date"></p>
+                <button class="btn-ghost" type="button" onclick="logoutEmployee()">Sair</button>
+            </div>
+        </section>
+
+        <p id="message" class="message" aria-live="polite"></p>
+    </main>
+</div>
+
+<script>
+    const businessUUID = "{{ public_uuid|escapejs }}";
+    const PROFILE_URL = "{% url 'api-employee:me' %}";
+    const CLOCKING_URL = "{% url 'api-employee:work-sessions' %}";
+
+    let employeeToken = localStorage.getItem("employeeToken");
+
+    function getCSRFToken() {
+        return document.querySelector("[name=csrfmiddlewaretoken]")?.value || "";
+    }
+
+    function showMessage(message, isError = false) {
+        const el = document.getElementById("message");
+        el.textContent = message;
+        el.className = "message " + (isError ? "error" : "success");
+    }
+
+    function generateEmployeeToken(register, pin) {
+        return btoa(`${businessUUID},${register},${pin}`);
+    }
+
+    function parseAPIError(data) {
+        if (!data) return "Erro inesperado";
+        if (typeof data === "string") return data;
+        if (data.detail) return Array.isArray(data.detail) ? data.detail.join(" ") : data.detail;
+        if (data.non_field_errors) return data.non_field_errors.join(" ");
+        return Object.values(data).flat().join(" ") || "Erro inesperado";
+    }
+
+    function getInitials(value) {
+        const parts = String(value || "")
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2);
+
+        return parts.map((part) => part[0]).join("").toUpperCase() || "CH";
+    }
+
+    async function requestAPI(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(),
+                "employee-token": employeeToken,
+                ...(options.headers || {}),
+            },
+        });
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok) {
+            throw new Error(parseAPIError(data));
+        }
+
+        return data;
+    }
+
+    async function loginEmployee(event) {
+        event.preventDefault();
+
+        const register = document.getElementById("register").value.trim();
+        const pin = document.getElementById("pin").value.trim();
+
+        if (!register || !pin) {
+            showMessage("Informe matrícula e PIN", true);
+            return;
+        }
+
+        employeeToken = generateEmployeeToken(register, pin);
+        localStorage.setItem("employeeToken", employeeToken);
+
+        try {
+            await loadProfile();
+            showMessage("Login realizado com sucesso");
+        } catch (e) {
+            localStorage.removeItem("employeeToken");
+            employeeToken = null;
+            showMessage(e.message, true);
+        }
+    }
+
+    async function loadProfile() {
+        if (!employeeToken) return;
+
+        const employee = await requestAPI(PROFILE_URL);
+        const employeeName = employee.name || "Colaborador";
+        const businessName = employee.business?.name || "Empresa";
+
+        document.getElementById("login-section").classList.add("hidden");
+        document.getElementById("profile-section").classList.remove("hidden");
+        document.getElementById("identity-section").classList.remove("hidden");
+
+        document.getElementById("employee-name").textContent = employeeName;
+        document.getElementById("employee-register").textContent =
+            employee.register ? `Matrícula ${employee.register}` : "Sem matrícula";
+        document.getElementById("employee-initials").textContent = getInitials(employeeName);
+
+        document.getElementById("business-name").textContent = businessName;
+        document.getElementById("business-summary").textContent =
+            employee.business?.summary || "Sem resumo";
+        document.getElementById("business-initials").textContent = getInitials(businessName);
+
+        setImage("employee-picture", employee.picture, "employee-initials");
+        setImage("business-picture", employee.business?.picture, "business-initials");
+    }
+
+    function setImage(id, url, fallbackId) {
+        const el = document.getElementById(id);
+        const fallback = fallbackId ? document.getElementById(fallbackId) : null;
+
+        function showFallback() {
+            el.classList.add("hidden");
+            fallback?.classList.remove("hidden");
+        }
+
+        if (!url) {
+            showFallback();
+            return;
+        }
+
+        el.onerror = showFallback;
+        el.src = url;
+        el.classList.remove("hidden");
+        fallback?.classList.add("hidden");
+    }
+
+    function logoutEmployee() {
+        employeeToken = null;
+        localStorage.removeItem("employeeToken");
+        document.getElementById("profile-section").classList.add("hidden");
+        document.getElementById("identity-section").classList.add("hidden");
+        document.getElementById("login-section").classList.remove("hidden");
+        document.getElementById("pin").value = "";
+        showMessage("Sessão encerrada");
+    }
+
+    function updateCurrentTime() {
+        const now = new Date();
+        const time = now.toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        const date = now.toLocaleDateString("pt-BR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+        });
+
+        document.getElementById("hero-time").textContent = time;
+        document.getElementById("current-time").textContent = time;
+        document.getElementById("today-date").textContent = date;
+        document.getElementById("current-date").textContent = date;
+    }
+
+    async function clocking(type) {
+        try {
+            await requestAPI(CLOCKING_URL, {
+                method: "POST",
+                body: JSON.stringify({ record_type: type }),
+            });
+
+            showMessage("Ponto registrado!");
+        } catch (e) {
+            showMessage(e.message, true);
+        }
+    }
+
+    loadProfile().catch(() => {
+        localStorage.removeItem("employeeToken");
+        employeeToken = null;
+        document.getElementById("identity-section").classList.add("hidden");
+    });
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 1000);
+</script>
+</body>
+</html>
