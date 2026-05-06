@@ -14,6 +14,7 @@ def clocking_view(request, public_uuid: str):
         {"public_uuid": business.public_uuid},
     )
 
+
 def short_link_view(request, code: str):
     """Shorten the company page link and redirect it."""
     business = Business.objects.filter(short_link=code).first()

@@ -126,9 +126,8 @@ class Business(BaseModel):
             return True
 
         client_ip = ipaddress.ip_address(ip)
-        for network in self.allowed_ips:
-            print(client_ip, network)
-            if client_ip == ipaddress.ip_address(network):
+        for allowed_ip in self.allowed_ips:
+            if client_ip == ipaddress.ip_address(allowed_ip):
                 return True
         return False
 
