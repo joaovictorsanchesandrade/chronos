@@ -6,3 +6,4 @@
 **/.codex
 **/.agents
 *.sqlite3
+*.env

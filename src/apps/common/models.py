@@ -104,7 +104,11 @@ class Business(BaseModel):
         verbose_name = _("empresa")
         verbose_name_plural = _("empresas")
         ordering = ("-created_at",)
-        indexes = [models.Index(fields=["owner", "created_at"])]
+        indexes = [
+            models.Index(fields=["owner", "created_at"]),
+            models.Index(fields=["is_deleted", "owner"]),
+            models.Index(fields=["is_deleted", "owner", "public_uuid"]),
+        ]
 
     def __str__(self):
         return self.name

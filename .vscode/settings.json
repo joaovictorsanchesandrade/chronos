@@ -1,4 +1,5 @@
 {
+    "python.terminal.useEnvFile": true,
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,

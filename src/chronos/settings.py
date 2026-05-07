@@ -10,7 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import dotenv
 from pathlib import Path
+import os
+
+dotenv.load_dotenv(dotenv_path=".env")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-p@at_c#-08ve4l+ne+8*22#t5+)52oy&$k*xxpp4n7t9e)(b7$"
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ["DEBUG"] == "true"
 
-ALLOWED_HOSTS = ["*"]
-
+ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
+INTERNAL_IPS = ["127.0.0.1"]
 
 # Application definition
 
@@ -37,10 +41,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "debug_toolbar",
+    "silk",
     "apps.common",
+    "apps.business",
+    "apps.employee",
+    "apps.moderator",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "silk.middleware.SilkyMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -77,8 +88,12 @@ WSGI_APPLICATION = "chronos.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ["POSTGRES_NAME"],
+        "USER": os.environ["POSTGRES_USER"],
+        "PASSWORD": os.environ["POSTGRES_PASS"],
+        "HOST": os.environ["POSTGRES_HOST"],
+        "PORT": os.environ["POSTGRES_PORT"],
     }
 }
 
@@ -105,9 +120,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = "pt-BR"
+LANGUAGE_CODE = os.environ["LANGUAGE_CODE"]
 
-TIME_ZONE = "America/Sao_Paulo"
+TIME_ZONE = os.environ["TIME_ZONE"]
 
 USE_I18N = True
 
@@ -122,3 +137,17 @@ STATICFILES_DIRS = [BASE_DIR / "apps/common/static"]
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "apps/common/media"
+
+
+def silky_authorisation(request):
+    return request.user.is_superuser
+
+
+if DEBUG:
+    SILKY_PYTHON_PROFILER = True
+    SILKY_META = True
+
+    SILKY_MAX_RECORDED_REQUESTS = 1000
+
+    SILKY_AUTHENTICATION = True
+    SILKY_AUTHORISATION = silky_authorisation
