@@ -56,6 +56,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.common.middlewares.ApplicationRequestMiddleware",
     "apps.common.middlewares.ClientIPMiddleware",
     "apps.common.middlewares.ClientLocationMiddleware",
     "apps.employee.middlewares.EmployeeAuthenticateMiddleware",

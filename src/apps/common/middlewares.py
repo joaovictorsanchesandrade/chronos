@@ -1,7 +1,18 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 from django.utils.translation import gettext as _
 from typing import Optional
 from apps.common.types import ApplicationRequest, ClientLocation
+
+
+class ApplicationRequestMiddleware:
+    """Request instance for a custom request for my application."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest):
+        request = ApplicationRequest(request)
+        return self.get_response(request)
 
 
 class ClientIPMiddleware:

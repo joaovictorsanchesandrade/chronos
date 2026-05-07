@@ -60,7 +60,7 @@ class EmployeeLocationMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: ApplicationRequest):
-        employee: Optional[Employee] = getattr(request, "employee", None)
+        employee: Optional[Employee] = request.employee
         if employee and employee.business.restricted_gps:
             if not request.client_location:
                 return JsonResponse(
