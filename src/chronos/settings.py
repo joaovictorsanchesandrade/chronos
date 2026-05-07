@@ -31,7 +31,6 @@ DEBUG = os.environ["DEBUG"].lower() == "true"
 
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
 
-print(os.environ)
 # Application definition
 
 INSTALLED_APPS = [

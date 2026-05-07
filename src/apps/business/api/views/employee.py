@@ -44,5 +44,16 @@ class EmployeeRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
             business__owner=self.request.user,
         )
 
+    def get_business(self):
+        business_uuid = self.kwargs["business_uuid"]
+        return get_object_or_404(
+            Business.objects.filter_by_public_uuid(self.request.user, business_uuid)
+        )
+        
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["business"] = self.get_business()
+        return context
+
     def perform_destroy(self, instance: Employee):
         instance.user_delete()

@@ -1,7 +1,7 @@
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 from apps.common.models import Business, Employee, TimeRecord, WorkSession
-from typing import Any
+from typing import Any, Optional
 
 
 class BusinessSerializer(serializers.ModelSerializer):
@@ -53,6 +53,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "picture",
             "register",
             "pin",
+            "is_active",
             "name",
             "updated_at",
             "created_at",
@@ -61,6 +62,10 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     def validate_register(self, value: str):
         business = self.context["business"]
+        _instance: Optional[Employee] = self.instance
+        if _instance and _instance.register == value:
+            return value
+        
         queryset = Employee.objects.filter(register=value, business=business)
         if queryset.exists():
             raise serializers.ValidationError(
