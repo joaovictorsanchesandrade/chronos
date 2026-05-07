@@ -108,7 +108,7 @@ class Business(BaseModel):
         _("latitude"), max_digits=9, decimal_places=6, blank=True, null=True
     )
     lng = models.DecimalField(
-        _("longuitude"), max_digits=9, decimal_places=6, blank=True, null=True
+        _("longitude"), max_digits=9, decimal_places=6, blank=True, null=True
     )
     allowed_radius_meters = models.PositiveBigIntegerField(
         _("metros de raio permitido"), default=100
@@ -192,21 +192,21 @@ class WorkSession(models.Model):
         Employee,
         on_delete=models.CASCADE,
         related_name="work_sessions",
-        verbose_name=_("Funcionário"),
+        verbose_name=_("funcionário"),
     )
 
-    start_at = models.DateTimeField(_("Iniciou em"), blank=False, null=False)
-    end_at = models.DateTimeField(_("Terminou em"), blank=True, null=True)
+    start_at = models.DateTimeField(_("iniciou em"), blank=False, null=False)
+    end_at = models.DateTimeField(_("terminou em"), blank=True, null=True)
 
-    is_edited = models.BooleanField(_("Foi editado"), default=False)
+    is_edited = models.BooleanField(_("foi editado"), default=False)
     edit_reason = models.CharField(
-        _("Motivo da edição"), max_length=512, blank=True, null=True
+        _("motivo da edição"), max_length=512, blank=True, null=True
     )
 
-    trusted = models.BooleanField(_("Confiável"), default=True)
+    trusted = models.BooleanField(_("confiável"), default=True)
 
-    created_at = models.DateTimeField(_("Criado em"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("Atualizado em "), auto_now=True)
+    created_at = models.DateTimeField(_("criado em"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("atualizado em "), auto_now=True)
 
     class Meta:
         db_table = "core_work_sessions"
@@ -217,19 +217,30 @@ class TimeRecord(models.Model):
         WorkSession,
         on_delete=models.CASCADE,
         related_name="time_records",
-        verbose_name=_("Jornada"),
+        verbose_name=_("jornada"),
     )
     type = models.CharField(
-        _("Tipo"),
+        _("tipo"),
         max_length=32,
         choices=TimeRecordType.choices,
     )
-    ajusted_at = models.DateTimeField(_("Horário Ajustado"), null=True, blank=True)
+    ajusted_at = models.DateTimeField(_("horário Ajustado"), null=True, blank=True)
     adjustment_reason = models.CharField(
-        _("Motivo do ajuste"), max_length=512, null=True, blank=True
+        _("motivo do ajuste"), max_length=512, null=True, blank=True
+    )
+
+    location_lat = models.DecimalField(
+        _("latitude"), max_digits=9, decimal_places=6, null=True, blank=True
+    )
+    location_lng = models.DecimalField(
+        _("longitude"), max_digits=9, decimal_places=6, null=True, blank=True
+    )
+    location_accuracy = models.FloatField(_("precisão"), null=True, blank=True)
+    distance_from_business_meters = models.FloatField(
+        _("distancia da empresa em metros"), null=True, blank=True
     )
     client_ip = models.GenericIPAddressField(_("IP do cliente"), null=True, blank=True)
-    registred_at = models.DateTimeField(_("Registrado em"), auto_now_add=True)
+    registred_at = models.DateTimeField(_("registrado em"), auto_now_add=True)
 
     class Meta:
         db_table = "core_time_records"

@@ -61,7 +61,11 @@ class EmployeeLocationMiddleware:
 
     def __call__(self, request: ApplicationRequest):
         employee: Optional[Employee] = request.employee
-        if employee and employee.business.restricted_gps and request.method.upper() != "GET":
+        if (
+            employee
+            and employee.business.restricted_gps
+            and request.method.upper() != "GET"
+        ):
             if not request.client_location:
                 return JsonResponse(
                     {

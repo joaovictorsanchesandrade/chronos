@@ -6,6 +6,7 @@ from apps.common.models import (
     TimeRecord,
     TimeRecordType,
 )
+from apps.common.types import ClientLocation
 from apps.employee.exceptions import (
     InvalidTimeRecordException,
 )
@@ -24,7 +25,11 @@ def get_work_session(*, employee: Employee, record_type: TimeRecordType) -> Work
 
 
 def create_time_record(
-    *, employee: Employee, record_type: TimeRecordType, client_ip: str
+    *,
+    employee: Employee,
+    record_type: TimeRecordType,
+    client_ip: str,
+    client_location: ClientLocation,
 ) -> TimeRecord:
     """Creates a time record in the database."""
     work_session = get_work_session(employee=employee, record_type=record_type)
@@ -32,6 +37,10 @@ def create_time_record(
         type=record_type,
         client_ip=client_ip,
         work_session=work_session,
+        location_lat=client_location.lat,
+        location_lng=client_location.lng,
+        location_accuracy=client_location.accuracy,
+        distance_from_business_meters=client_location.distance,
     )
 
 

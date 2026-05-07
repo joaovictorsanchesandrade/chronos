@@ -42,8 +42,12 @@ class TimeRecordsSerializer(serializers.ModelSerializer):
             "type",
             "client_ip",
             "registred_at",
+            "location_lat",
+            "location_lng",
+            "location_accuracy",
+            "distance_from_business_meters"
         )
-
+        
 
 class WorkSessionSerializer(serializers.ModelSerializer):
     time_records = TimeRecordsSerializer(many=True)
