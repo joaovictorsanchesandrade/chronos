@@ -210,6 +210,9 @@ class WorkSession(models.Model):
 
     class Meta:
         db_table = "core_work_sessions"
+        verbose_name = _("jornada de trabalho")
+        verbose_name_plural = _("jornadas de trabalho")
+        ordering=("created_at",)
 
 
 class TimeRecord(models.Model):
@@ -244,3 +247,5 @@ class TimeRecord(models.Model):
 
     class Meta:
         db_table = "core_time_records"
+        verbose_name = _("registro de tempo")
+        verbose_name_plural = _("registros de tempo")
