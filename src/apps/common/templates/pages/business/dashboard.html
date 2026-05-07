@@ -2,11 +2,11 @@
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Chronos - Dashboard Business</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronos - Empresas</title>
 
     <link rel="stylesheet" href="{% static 'business/css/dashboard.css' %}">
 </head>
@@ -14,45 +14,41 @@
 <body>
     <div class="dashboard">
         <aside class="sidebar">
-            <div class="brand">
+            <div class="brand-row">
                 <div class="brand-mark">C</div>
                 <div>
-                    <p>Chronos</p>
-                    <strong>Business</strong>
+                    <p class="eyebrow">Chronos</p>
+                    <h1>Business</h1>
                 </div>
             </div>
 
             <nav class="nav">
-                <button class="nav-item active" type="button">
-                    Empresas
-                </button>
-
-                <button class="nav-item" type="button">
-                    Funcionários
-                </button>
+                <button class="nav-item active" type="button">Empresas</button>
+                <button class="nav-item" type="button">Funcionários</button>
             </nav>
         </aside>
 
-        <main class="main">
-            <header class="header">
+        <main class="main-panel">
+            <header class="page-header">
                 <div>
-                    <p class="eyebrow">Painel administrativo</p>
-                    <h1>Dashboard Business</h1>
+                    <p class="eyebrow">Dashboard</p>
+                    <h2>Gerenciar empresas</h2>
+                    <p>Crie, edite e configure as restrições de ponto.</p>
                 </div>
 
-                <button class="btn-primary" type="button" onclick="openBusinessForm()">
+                <button class="btn-primary" type="button" onclick="openBusinessModal()">
                     Nova empresa
                 </button>
             </header>
 
-            <section id="message" class="message hidden"></section>
+            <p id="message" class="message"></p>
 
-            <section class="grid">
+            <section class="content-grid">
                 <section class="card">
                     <div class="card-header">
                         <div>
-                            <h2>Suas empresas</h2>
-                            <p>Gerencie as empresas vinculadas à sua conta.</p>
+                            <h3>Empresas</h3>
+                            <p>Empresas vinculadas à sua conta.</p>
                         </div>
                     </div>
 
@@ -62,16 +58,12 @@
                 <section class="card">
                     <div class="card-header">
                         <div>
-                            <h2 id="employees-title">Funcionários</h2>
-                            <p id="employees-subtitle">Selecione uma empresa para visualizar.</p>
+                            <h3 id="employees-title">Funcionários</h3>
+                            <p id="employees-description">Selecione uma empresa.</p>
                         </div>
 
-                        <button
-                            id="new-employee-button"
-                            class="btn-secondary hidden"
-                            type="button"
-                            onclick="openEmployeeForm()"
-                        >
+                        <button id="create-employee-button" class="btn-ghost hidden" type="button"
+                            onclick="openEmployeeModal()">
                             Novo funcionário
                         </button>
                     </div>
@@ -84,69 +76,73 @@
         </main>
     </div>
 
-    <!-- Modal Empresa -->
-    <dialog id="business-dialog" class="dialog">
-        <form id="business-form" class="form" onsubmit="submitBusiness(event)">
+    <dialog id="business-modal" class="modal">
+        <form id="business-form" class="form" onsubmit="saveBusiness(event)">
             {% csrf_token %}
 
-            <div class="dialog-header">
-                <h2 id="business-form-title">Nova empresa</h2>
-                <button type="button" class="btn-icon" onclick="closeBusinessForm()">×</button>
+            <div class="modal-header">
+                <div>
+                    <p class="eyebrow">Empresa</p>
+                    <h3 id="business-modal-title">Nova empresa</h3>
+                </div>
+
+                <button class="btn-close" type="button" onclick="closeBusinessModal()">×</button>
             </div>
 
-            <input type="hidden" id="business-uuid">
+            <input id="business-uuid" type="hidden">
 
             <div class="field">
                 <label for="business-name">Nome</label>
-                <input id="business-name" name="name" type="text" required>
+                <input id="business-name" type="text" required maxlength="256">
             </div>
 
             <div class="field">
                 <label for="business-summary">Resumo</label>
-                <input id="business-summary" name="summary" type="text">
+                <input id="business-summary" type="text" maxlength="512">
             </div>
 
             <div class="field">
-                <label for="business-picture">Logo</label>
-                <input id="business-picture" name="picture" type="file" accept="image/*">
+                <label for="business-description">Descrição</label>
+                <textarea id="business-description" rows="4"></textarea>
+            </div>
+
+            <div class="field">
+                <label for="business-picture">Foto / Logo</label>
+                <input id="business-picture" type="file" accept="image/*">
             </div>
 
             <div class="form-grid">
                 <label class="checkbox">
-                    <input id="restricted-network" type="checkbox">
-                    Restringir por rede
+                    <input id="business-restricted-network" type="checkbox">
+                    Restrição de rede
                 </label>
 
                 <label class="checkbox">
-                    <input id="restricted-gps" type="checkbox">
-                    Restringir por GPS
+                    <input id="business-restricted-gps" type="checkbox">
+                    Restrição de GPS
                 </label>
+            </div>
+
+            <div class="field">
+                <label for="business-allowed-ips">IPs permitidos</label>
+                <input id="business-allowed-ips" type="text" placeholder="Ex: 192.168.1.60, 10.0.0.20">
             </div>
 
             <div class="form-grid">
                 <div class="field">
                     <label for="business-lat">Latitude</label>
-                    <input id="business-lat" type="number" step="any">
+                    <input id="business-lat" type="number" step="0.000001">
                 </div>
 
                 <div class="field">
                     <label for="business-lng">Longitude</label>
-                    <input id="business-lng" type="number" step="any">
+                    <input id="business-lng" type="number" step="0.000001">
                 </div>
             </div>
 
             <div class="field">
-                <label for="allowed-radius">Raio permitido em metros</label>
-                <input id="allowed-radius" type="number" min="1" value="100">
-            </div>
-
-            <div class="field">
-                <label for="allowed-ips">IPs permitidos</label>
-                <input
-                    id="allowed-ips"
-                    type="text"
-                    placeholder="Ex: 192.168.1.60, 10.0.0.1"
-                >
+                <label for="business-radius">Raio permitido em metros</label>
+                <input id="business-radius" type="number" min="0" value="100">
             </div>
 
             <button class="btn-primary" type="submit">
@@ -155,17 +151,20 @@
         </form>
     </dialog>
 
-    <!-- Modal Funcionário -->
-    <dialog id="employee-dialog" class="dialog">
-        <form id="employee-form" class="form" onsubmit="submitEmployee(event)">
+    <dialog id="employee-modal" class="modal">
+        <form id="employee-form" class="form" onsubmit="saveEmployee(event)">
             {% csrf_token %}
 
-            <div class="dialog-header">
-                <h2 id="employee-form-title">Novo funcionário</h2>
-                <button type="button" class="btn-icon" onclick="closeEmployeeForm()">×</button>
+            <div class="modal-header">
+                <div>
+                    <p class="eyebrow">Funcionário</p>
+                    <h3 id="employee-modal-title">Novo funcionário</h3>
+                </div>
+
+                <button class="btn-close" type="button" onclick="closeEmployeeModal()">×</button>
             </div>
 
-            <input type="hidden" id="employee-uuid">
+            <input id="employee-uuid" type="hidden">
 
             <div class="field">
                 <label for="employee-name">Nome</label>
@@ -195,10 +194,11 @@
 
     <script>
         window.CHRONOS_CONFIG = {
-            businessURL: "/api/business/",
+            businessURL: "/api/business/"
         };
     </script>
 
     <script src="{% static 'business/js/dashboard.js' %}"></script>
 </body>
+
 </html>

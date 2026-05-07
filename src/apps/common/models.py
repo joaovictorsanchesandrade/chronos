@@ -249,3 +249,6 @@ class TimeRecord(models.Model):
         db_table = "core_time_records"
         verbose_name = _("registro de tempo")
         verbose_name_plural = _("registros de tempo")
+
+    def __str__(self):
+        return f"{self.type} - {self.registred_at} - {self.work_session.employee.name}"

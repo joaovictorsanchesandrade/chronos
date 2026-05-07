@@ -8,7 +8,6 @@ function getCSRFToken() {
 
 function showMessage(message, isError = false) {
     const el = document.getElementById("message");
-
     el.textContent = message;
     el.className = `message ${isError ? "error" : "success"}`;
 }
@@ -16,7 +15,7 @@ function showMessage(message, isError = false) {
 function parseAPIError(data) {
     if (!data) return "Erro inesperado.";
     if (typeof data === "string") return data;
-    if (data.detail) return data.detail;
+    if (data.detail) return Array.isArray(data.detail) ? data.detail.join(" ") : data.detail;
     if (data.non_field_errors) return data.non_field_errors.join(" ");
 
     return Object.values(data).flat().join(" ") || "Erro inesperado.";
@@ -24,14 +23,16 @@ function parseAPIError(data) {
 
 async function requestAPI(url, options = {}) {
     const response = await fetch(url, {
-        credentials: "same-origin",
         ...options,
+        credentials: "same-origin",
         headers: {
             "X-CSRFToken": getCSRFToken(),
             ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
             ...(options.headers || {}),
         },
     });
+
+    if (response.status === 204) return null;
 
     const data = await response.json().catch(() => null);
 
@@ -43,14 +44,38 @@ async function requestAPI(url, options = {}) {
 }
 
 function getResults(data) {
-    return Array.isArray(data) ? data : data.results || [];
+    return Array.isArray(data) ? data : data?.results || [];
+}
+
+function formatDate(value) {
+    if (!value) return "Não informado";
+
+    return new Intl.DateTimeFormat("pt-BR", {
+        dateStyle: "short",
+        timeStyle: "short",
+    }).format(new Date(value));
+}
+
+function getInitials(value) {
+    return String(value || "CH")
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase();
+}
+
+function parseAllowedIPs(value) {
+    return String(value || "")
+        .split(",")
+        .map((ip) => ip.trim())
+        .filter(Boolean);
 }
 
 async function loadBusinesses() {
     const data = await requestAPI(BUSINESS_URL);
-    const businesses = getResults(data);
-
-    renderBusinesses(businesses);
+    renderBusinesses(getResults(data));
 }
 
 function renderBusinesses(businesses) {
@@ -67,26 +92,37 @@ function renderBusinesses(businesses) {
 
     businesses.forEach((business) => {
         const item = document.createElement("article");
-        item.className = "list-item";
+        item.className = "business-item";
 
         item.innerHTML = `
-            <div>
-                <strong>${business.name}</strong>
-                <p>${business.summary || "Sem resumo"}</p>
+            <div class="item-media">
+                ${
+                    business.picture
+                        ? `<img src="${business.picture}" alt="Logo de ${business.name}">`
+                        : `<span>${getInitials(business.name)}</span>`
+                }
             </div>
 
-            <div class="actions">
-                <button type="button" onclick='selectBusiness(${JSON.stringify(business)})'>
-                    Abrir
-                </button>
+            <div class="item-content">
+                <strong>${business.name}</strong>
+                <p>${business.summary || "Sem resumo"}</p>
 
-                <button type="button" onclick='editBusiness(${JSON.stringify(business)})'>
-                    Editar
-                </button>
+                <div class="item-meta">
+                    <span>${business.restricted_network ? "Rede restrita" : "Rede livre"}</span>
+                    <span>${business.restricted_gps ? "GPS restrito" : "GPS livre"}</span>
+                </div>
 
-                <button type="button" class="danger" onclick="deleteBusiness('${business.public_uuid}')">
-                    Excluir
-                </button>
+                ${
+                    business.short_link
+                        ? `<a href="${business.short_link}" target="_blank" rel="noopener">Abrir link curto</a>`
+                        : ""
+                }
+            </div>
+
+            <div class="item-actions">
+                <button type="button" onclick='selectBusiness(${JSON.stringify(business)})'>Abrir</button>
+                <button type="button" onclick='editBusiness(${JSON.stringify(business)})'>Editar</button>
+                <button type="button" class="danger" onclick="deleteBusiness('${business.public_uuid}')">Excluir</button>
             </div>
         `;
 
@@ -98,8 +134,8 @@ async function selectBusiness(business) {
     selectedBusiness = business;
 
     document.getElementById("employees-title").textContent = business.name;
-    document.getElementById("employees-subtitle").textContent = "Funcionários cadastrados nesta empresa.";
-    document.getElementById("new-employee-button").classList.remove("hidden");
+    document.getElementById("employees-description").textContent = "Funcionários cadastrados nesta empresa.";
+    document.getElementById("create-employee-button").classList.remove("hidden");
 
     await loadEmployees();
 }
@@ -107,11 +143,8 @@ async function selectBusiness(business) {
 async function loadEmployees() {
     if (!selectedBusiness) return;
 
-    const url = `${BUSINESS_URL}${selectedBusiness.public_uuid}/employees/`;
-    const data = await requestAPI(url);
-    const employees = getResults(data);
-
-    renderEmployees(employees);
+    const data = await requestAPI(`${BUSINESS_URL}${selectedBusiness.public_uuid}/employees/`);
+    renderEmployees(getResults(data));
 }
 
 function renderEmployees(employees) {
@@ -128,22 +161,29 @@ function renderEmployees(employees) {
 
     employees.forEach((employee) => {
         const item = document.createElement("article");
-        item.className = "list-item";
+        item.className = "business-item";
 
         item.innerHTML = `
-            <div>
-                <strong>${employee.name}</strong>
-                <p>Matrícula ${employee.register || "-"}</p>
+            <div class="item-media">
+                ${
+                    employee.picture
+                        ? `<img src="${employee.picture}" alt="Foto de ${employee.name}">`
+                        : `<span>${getInitials(employee.name)}</span>`
+                }
             </div>
 
-            <div class="actions">
-                <button type="button" onclick='editEmployee(${JSON.stringify(employee)})'>
-                    Editar
-                </button>
+            <div class="item-content">
+                <strong>${employee.name}</strong>
+                <p>Matrícula ${employee.register || "não informada"}</p>
 
-                <button type="button" class="danger" onclick="deleteEmployee('${employee.public_uuid}')">
-                    Excluir
-                </button>
+                <div class="item-meta">
+                    <span>${employee.is_active ? "Ativo" : "Inativo"}</span>
+                </div>
+            </div>
+
+            <div class="item-actions">
+                <button type="button" onclick='editEmployee(${JSON.stringify(employee)})'>Editar</button>
+                <button type="button" class="danger" onclick="deleteEmployee('${employee.public_uuid}')">Excluir</button>
             </div>
         `;
 
@@ -151,34 +191,37 @@ function renderEmployees(employees) {
     });
 }
 
-function openBusinessForm() {
+function openBusinessModal() {
     document.getElementById("business-form").reset();
     document.getElementById("business-uuid").value = "";
-    document.getElementById("business-form-title").textContent = "Nova empresa";
-    document.getElementById("business-dialog").showModal();
+    document.getElementById("business-modal-title").textContent = "Nova empresa";
+    document.getElementById("business-modal").showModal();
 }
 
-function closeBusinessForm() {
-    document.getElementById("business-dialog").close();
+function closeBusinessModal() {
+    document.getElementById("business-modal").close();
 }
 
 function editBusiness(business) {
-    document.getElementById("business-form-title").textContent = "Editar empresa";
-    document.getElementById("business-uuid").value = business.public_uuid;
+    document.getElementById("business-modal-title").textContent = "Editar empresa";
+    document.getElementById("business-uuid").value = business.public_uuid || "";
 
     document.getElementById("business-name").value = business.name || "";
     document.getElementById("business-summary").value = business.summary || "";
-    document.getElementById("restricted-network").checked = Boolean(business.restricted_network);
-    document.getElementById("restricted-gps").checked = Boolean(business.restricted_gps);
-    document.getElementById("business-lat").value = business.lat || "";
-    document.getElementById("business-lng").value = business.lng || "";
-    document.getElementById("allowed-radius").value = business.allowed_radius_meters || 100;
-    document.getElementById("allowed-ips").value = (business.allowed_ips || []).join(", ");
+    document.getElementById("business-description").value = business.description || "";
 
-    document.getElementById("business-dialog").showModal();
+    document.getElementById("business-restricted-network").checked = Boolean(business.restricted_network);
+    document.getElementById("business-restricted-gps").checked = Boolean(business.restricted_gps);
+
+    document.getElementById("business-allowed-ips").value = (business.allowed_ips || []).join(", ");
+    document.getElementById("business-lat").value = business.lat ?? "";
+    document.getElementById("business-lng").value = business.lng ?? "";
+    document.getElementById("business-radius").value = business.allowed_radius_meters ?? 100;
+
+    document.getElementById("business-modal").showModal();
 }
 
-async function submitBusiness(event) {
+async function saveBusiness(event) {
     event.preventDefault();
 
     const uuid = document.getElementById("business-uuid").value;
@@ -186,23 +229,22 @@ async function submitBusiness(event) {
 
     const formData = new FormData();
 
-    formData.append("name", document.getElementById("business-name").value);
-    formData.append("summary", document.getElementById("business-summary").value);
+    formData.append("name", document.getElementById("business-name").value.trim());
+    formData.append("summary", document.getElementById("business-summary").value.trim());
+    formData.append("description", document.getElementById("business-description").value.trim());
 
-    formData.append("restricted_network", document.getElementById("restricted-network").checked);
-    formData.append("restricted_gps", document.getElementById("restricted-gps").checked);
-    formData.append("lat", document.getElementById("business-lat").value);
-    formData.append("lng", document.getElementById("business-lng").value);
-    formData.append("allowed_radius_meters", document.getElementById("allowed-radius").value);
+    formData.append("restricted_network", document.getElementById("business-restricted-network").checked);
+    formData.append("restricted_gps", document.getElementById("business-restricted-gps").checked);
 
-    const allowedIPs = document
-        .getElementById("allowed-ips")
-        .value
-        .split(",")
-        .map((ip) => ip.trim())
-        .filter(Boolean);
+    const lat = document.getElementById("business-lat").value;
+    const lng = document.getElementById("business-lng").value;
+    const radius = document.getElementById("business-radius").value;
 
-    allowedIPs.forEach((ip) => {
+    if (lat) formData.append("lat", lat);
+    if (lng) formData.append("lng", lng);
+    if (radius) formData.append("allowed_radius_meters", radius);
+
+    parseAllowedIPs(document.getElementById("business-allowed-ips").value).forEach((ip) => {
         formData.append("allowed_ips", ip);
     });
 
@@ -216,7 +258,7 @@ async function submitBusiness(event) {
             body: formData,
         });
 
-        closeBusinessForm();
+        closeBusinessModal();
         await loadBusinesses();
 
         showMessage(uuid ? "Empresa atualizada com sucesso." : "Empresa criada com sucesso.");
@@ -235,11 +277,14 @@ async function deleteBusiness(uuid) {
 
         if (selectedBusiness?.public_uuid === uuid) {
             selectedBusiness = null;
+
             document.getElementById("employees-title").textContent = "Funcionários";
-            document.getElementById("employees-subtitle").textContent = "Selecione uma empresa para visualizar.";
-            document.getElementById("new-employee-button").classList.add("hidden");
-            document.getElementById("employee-list").className = "list empty";
-            document.getElementById("employee-list").textContent = "Nenhuma empresa selecionada.";
+            document.getElementById("employees-description").textContent = "Selecione uma empresa.";
+            document.getElementById("create-employee-button").classList.add("hidden");
+
+            const list = document.getElementById("employee-list");
+            list.className = "list empty";
+            list.textContent = "Nenhuma empresa selecionada.";
         }
 
         await loadBusinesses();
@@ -249,7 +294,7 @@ async function deleteBusiness(uuid) {
     }
 }
 
-function openEmployeeForm() {
+function openEmployeeModal() {
     if (!selectedBusiness) {
         showMessage("Selecione uma empresa primeiro.", true);
         return;
@@ -258,26 +303,26 @@ function openEmployeeForm() {
     document.getElementById("employee-form").reset();
     document.getElementById("employee-uuid").value = "";
     document.getElementById("employee-is-active").checked = true;
-    document.getElementById("employee-form-title").textContent = "Novo funcionário";
-    document.getElementById("employee-dialog").showModal();
+    document.getElementById("employee-modal-title").textContent = "Novo funcionário";
+    document.getElementById("employee-modal").showModal();
 }
 
-function closeEmployeeForm() {
-    document.getElementById("employee-dialog").close();
+function closeEmployeeModal() {
+    document.getElementById("employee-modal").close();
 }
 
 function editEmployee(employee) {
-    document.getElementById("employee-form-title").textContent = "Editar funcionário";
-    document.getElementById("employee-uuid").value = employee.public_uuid;
+    document.getElementById("employee-modal-title").textContent = "Editar funcionário";
+    document.getElementById("employee-uuid").value = employee.public_uuid || "";
 
     document.getElementById("employee-name").value = employee.name || "";
     document.getElementById("employee-register").value = employee.register || "";
     document.getElementById("employee-is-active").checked = Boolean(employee.is_active);
 
-    document.getElementById("employee-dialog").showModal();
+    document.getElementById("employee-modal").showModal();
 }
 
-async function submitEmployee(event) {
+async function saveEmployee(event) {
     event.preventDefault();
 
     if (!selectedBusiness) return;
@@ -287,23 +332,23 @@ async function submitEmployee(event) {
 
     const formData = new FormData();
 
-    formData.append("name", document.getElementById("employee-name").value);
-    formData.append("register", document.getElementById("employee-register").value);
+    formData.append("name", document.getElementById("employee-name").value.trim());
+    formData.append("register", document.getElementById("employee-register").value.trim());
     formData.append("is_active", document.getElementById("employee-is-active").checked);
 
     if (picture) {
         formData.append("picture", picture);
     }
 
-    const baseURL = `${BUSINESS_URL}${selectedBusiness.public_uuid}/employees/`;
+    const url = `${BUSINESS_URL}${selectedBusiness.public_uuid}/employees/`;
 
     try {
-        await requestAPI(uuid ? `${baseURL}${uuid}/` : baseURL, {
+        await requestAPI(uuid ? `${url}${uuid}/` : url, {
             method: uuid ? "PATCH" : "POST",
             body: formData,
         });
 
-        closeEmployeeForm();
+        closeEmployeeModal();
         await loadEmployees();
 
         showMessage(uuid ? "Funcionário atualizado com sucesso." : "Funcionário criado com sucesso.");
@@ -316,10 +361,8 @@ async function deleteEmployee(uuid) {
     if (!selectedBusiness) return;
     if (!confirm("Deseja excluir este funcionário?")) return;
 
-    const url = `${BUSINESS_URL}${selectedBusiness.public_uuid}/employees/${uuid}/`;
-
     try {
-        await requestAPI(url, {
+        await requestAPI(`${BUSINESS_URL}${selectedBusiness.public_uuid}/employees/${uuid}/`, {
             method: "DELETE",
         });
 
