@@ -19,10 +19,17 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.common.pages.views import RegisterView
 from apps.employee.pages.views import ShortLinkView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path(
+        "accounts/register/",
+        RegisterView.as_view(),
+        name="register",
+    ),
     path("api/business/", include("apps.business.api.urls")),
     path("api/employees/", include("apps.employee.api.urls")),
     path("employees/", include("apps.employee.pages.urls")),
