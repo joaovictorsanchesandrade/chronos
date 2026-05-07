@@ -7,7 +7,7 @@ from apps.common.models import Business
 class ClockingView(View):
     """Renders the screen necessary for the employee to clock in."""
 
-    def get(request, public_uuid: str):
+    def get(self, request, public_uuid: str):
         business = Business.objects.filter(public_uuid=public_uuid).first()
         if not business:
             raise Http404()
@@ -21,7 +21,7 @@ class ClockingView(View):
 class ShortLinkView(View):
     """Shorten the company page link and redirect it."""
 
-    def get(request, code: str):
+    def get(self, request, code: str):
         business = Business.objects.filter(short_link=code).first()
         if not business:
             raise Http404()
