@@ -1,5 +1,7 @@
+from django.db.models import Q
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from apps.common.querysets import (
     BusinessQuerySet,
@@ -100,12 +102,18 @@ class Business(BaseModel):
     allowed_ips = models.JSONField(
         verbose_name=_("IPs liberados"), default=list, null=True, blank=True
     )
-    restricted_network = models.BooleanField(_("Restrição de rede"), default=False)
+    restricted_network = models.BooleanField(_("restrição de rede"), default=False)
 
-    lat = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    lng = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    allowed_radius_meters = models.PositiveBigIntegerField(default=100)
-    restricted_gps = models.BooleanField(_("Restrição de GPS"), default=False)
+    lat = models.DecimalField(
+        _("latitude"), max_digits=9, decimal_places=6, blank=True, null=True
+    )
+    lng = models.DecimalField(
+        _("longuitude"), max_digits=9, decimal_places=6, blank=True, null=True
+    )
+    allowed_radius_meters = models.PositiveBigIntegerField(
+        _("metros de raio permitido"), default=100
+    )
+    restricted_gps = models.BooleanField(_("restrição de GPS"), default=False)
 
     class Meta:
         db_table = "core_businesses"
@@ -116,6 +124,17 @@ class Business(BaseModel):
             models.Index(fields=["owner", "created_at"]),
             models.Index(fields=["is_deleted", "owner"]),
             models.Index(fields=["is_deleted", "owner", "public_uuid"]),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                name="business_restricted_gps_requires_lat_lng",
+                condition=(
+                    Q(restricted_gps=False) | Q(lat__isnull=False, lng__isnull=False)
+                ),
+                violation_error_message=_(
+                    "Latitude e longitude são obrigatórias quando a restrição por GPS está ativa."
+                ),
+            )
         ]
 
     def __str__(self):
@@ -134,7 +153,7 @@ class Business(BaseModel):
 
     def ip_is_allowed(self, ip: str) -> bool:
         """Check if the employee has permission to access the site from that IP address."""
-        if self.all_network:
+        if not self.restricted_network:
             return True
         return validate_network(ip_check=ip, allowed_ips=self.allowed_ips)
 

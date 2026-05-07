@@ -119,7 +119,7 @@ class EmployeeNetworkMiddleware:
 
     def __call__(self, request: ApplicationRequest):
         employee: Optional[Employee] = request.employee
-        if not employee:
+        if employee:
             business: Business = employee.business
             ip_allowed = business.ip_is_allowed(request.client_ip)
             if business.restricted_network and not ip_allowed:

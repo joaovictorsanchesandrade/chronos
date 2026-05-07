@@ -1,7 +1,7 @@
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 from apps.common.models import Business, Employee, TimeRecord, WorkSession
-import ipaddress
+from typing import Any
 
 
 class BusinessSerializer(serializers.ModelSerializer):
@@ -16,7 +16,11 @@ class BusinessSerializer(serializers.ModelSerializer):
             "public_uuid",
             "picture",
             "allowed_ips",
-            "all_network",
+            "restricted_network",
+            "allowed_radius_meters",
+            "lat",
+            "lng",
+            "restricted_gps",
             "short_link",
             "name",
             "summary",
@@ -26,6 +30,19 @@ class BusinessSerializer(serializers.ModelSerializer):
             "owner",
         )
         read_only_fields = ("public_uuid", "updated_at", "created_at", "short_link")
+
+    def validate(self, attrs: dict[str, Any]):
+        attrs = super().validate(attrs)
+        restricted_gps = attrs["restricted_gps"]
+        if restricted_gps:
+            lat, lng = attrs.get("lat"), attrs.get("lng")
+            if lat is None or lng is None:
+                raise serializers.ValidationError(
+                    _(
+                        "Latitude e longitude são obrigatórias quando a restrição de localização por GPS estiver ativa."
+                    )
+                )
+        return attrs
 
 
 class EmployeeSerializer(serializers.ModelSerializer):

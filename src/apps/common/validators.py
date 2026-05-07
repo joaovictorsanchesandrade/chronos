@@ -1,9 +1,11 @@
 from django.utils.translation import gettext as _
 from rest_framework.validators import ValidationError
 from geopy.distance import geodesic
+from apps.common.decorators import cached_function
 import ipaddress
 
 
+@cached_function()
 def validate_location(
     *,
     position_check: tuple[float, float, int | None],
@@ -21,6 +23,7 @@ def validate_location(
     return distance <= allowed_radius_meters, distance
 
 
+@cached_function()
 def validate_network(*, ip_check: str, allowed_ips: list[str]):
     """Check if the provided IP address is within the allowed IP addresses."""
     client_ip = ipaddress.ip_address(ip_check)

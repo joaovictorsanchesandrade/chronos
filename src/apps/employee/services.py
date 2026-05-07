@@ -64,7 +64,7 @@ def validate_time_record(*, employee: Employee, record_type: str):
             or last_record.type == TimeRecordType.BREAK_END
         ):
             return
-        raise InvalidTimeRecordException(_("Não é possivel inicia uma pausa agora"))
+        raise InvalidTimeRecordException(_("Não é possivel inicia uma pausa agora."))
 
     if record_type == TimeRecordType.BREAK_END:
         if last_record.type == TimeRecordType.BREAK_START:
