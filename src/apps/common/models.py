@@ -6,9 +6,9 @@ from apps.common.querysets import (
     EmployeeQuerySet,
 )
 from uuid import uuid4
+from apps.common.validators import validate_network
 import string
 import random
-import ipaddress
 
 
 def upload_photo(instance: models.Model, filename: str) -> str:
@@ -50,7 +50,7 @@ class BaseModel(models.Model):
         editable=False,
     )
     picture = models.ImageField(
-        _("foto"), upload_to=upload_photo, null=True, blank=True
+        verbose_name=_("foto"), upload_to=upload_photo, null=True, blank=True
     )
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
@@ -88,8 +88,6 @@ class Business(BaseModel):
     name = models.CharField(_("nome"), max_length=256)
     summary = models.CharField(_("resumo"), max_length=512, blank=True, null=True)
     description = models.TextField(_("descrição"), blank=True, null=True)
-    allowed_ips = models.JSONField(_("IPs liberados"), default=list, blank=True)
-    all_network = models.BooleanField(_("Qualquer rede"), default=False)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -97,7 +95,17 @@ class Business(BaseModel):
         db_index=True,
         verbose_name=_("proprietário"),
     )
-    short_link = models.CharField(null=True, blank=True)
+    short_link = models.CharField(_("link curto"), null=True, blank=True, db_index=True)
+
+    allowed_ips = models.JSONField(
+        verbose_name=_("IPs liberados"), default=list, null=True, blank=True
+    )
+    restricted_network = models.BooleanField(_("Restrição de rede"), default=False)
+
+    lat = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    lng = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    allowed_radius_meters = models.PositiveBigIntegerField(default=100)
+    restricted_gps = models.BooleanField(_("Restrição de GPS"), default=False)
 
     class Meta:
         db_table = "core_businesses"
@@ -128,12 +136,7 @@ class Business(BaseModel):
         """Check if the employee has permission to access the site from that IP address."""
         if self.all_network:
             return True
-
-        client_ip = ipaddress.ip_address(ip)
-        for allowed_ip in self.allowed_ips:
-            if client_ip == ipaddress.ip_address(allowed_ip):
-                return True
-        return False
+        return validate_network(ip_check=ip, allowed_ips=self.allowed_ips)
 
 
 class Employee(BaseModel):

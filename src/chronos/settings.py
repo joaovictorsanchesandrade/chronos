@@ -41,8 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "debug_toolbar",
-    "silk",
+    "rest_framework",
     "apps.common",
     "apps.business",
     "apps.employee",
@@ -50,8 +49,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "silk.middleware.SilkyMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -60,8 +57,19 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "apps.common.middlewares.ClientIPMiddleware",
+    "apps.common.middlewares.ClientLocationMiddleware",
     "apps.employee.middlewares.EmployeeAuthenticateMiddleware",
+    "apps.employee.middlewares.EmployeeLocationMiddleware",
+    "apps.employee.middlewares.EmployeeNetworkMiddleware",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ]
+}
+
 
 ROOT_URLCONF = "chronos.urls"
 
@@ -137,17 +145,3 @@ STATICFILES_DIRS = [BASE_DIR / "apps/common/static"]
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "apps/common/media"
-
-
-def silky_authorisation(request):
-    return request.user.is_superuser
-
-
-if DEBUG:
-    SILKY_PYTHON_PROFILER = True
-    SILKY_META = True
-
-    SILKY_MAX_RECORDED_REQUESTS = 1000
-
-    SILKY_AUTHENTICATION = True
-    SILKY_AUTHORISATION = silky_authorisation
