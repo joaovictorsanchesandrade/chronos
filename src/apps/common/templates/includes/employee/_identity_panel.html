@@ -1,6 +1,7 @@
 <aside class="identity-panel">
     <div class="brand-row">
         <div class="brand-mark">C</div>
+
         <div>
             <p class="eyebrow">Chronos</p>
             <h1>Ponto digital</h1>
@@ -10,13 +11,72 @@
     <div class="time-board">
         <div class="time-label">
             <span>Agora</span>
-            <span class="status-dot" aria-hidden="true"></span>
+
+            <span
+                class="status-dot"
+                aria-hidden="true"
+            ></span>
         </div>
-        <strong id="hero-time" class="hero-time">--:--</strong>
+
+        <strong id="hero-time" class="hero-time">
+            --:--
+        </strong>
+
         <span id="today-date" class="today-date"></span>
     </div>
 
-    <section id="identity-section" class="identity-section hidden">
-        <!-- seu bloco employee-summary e business aqui -->
+    <section
+        id="identity-section"
+        class="identity-section hidden"
+        aria-label="Dados do colaborador"
+    >
+        <div class="employee-summary">
+            <div class="avatar">
+                <img
+                    id="employee-picture"
+                    class="hidden"
+                    alt="Foto do funcionário"
+                />
+
+                <span
+                    id="employee-initials"
+                    class="avatar-fallback"
+                >
+                    CH
+                </span>
+            </div>
+
+            <div>
+                <h3 id="employee-name"></h3>
+
+                <p
+                    id="employee-register"
+                    class="employee-register"
+                ></p>
+            </div>
+        </div>
+
+        <div class="business">
+            <div class="business-logo">
+                <img
+                    id="business-picture"
+                    class="hidden"
+                    alt="Logo da empresa"
+                />
+
+                <span
+                    id="business-initials"
+                    class="business-fallback"
+                >
+                    CO
+                </span>
+            </div>
+
+            <div>
+                <h3 id="business-name"></h3>
+
+                <p id="business-summary"></p>
+            </div>
+        </div>
     </section>
 </aside>

@@ -1,5 +1,5 @@
 from django.http import HttpRequest
-from typing import TypedDict, Optional
+from typing import Optional
 from dataclasses import dataclass
 from apps.common.models import Employee
 
@@ -18,7 +18,3 @@ class ApplicationRequest(HttpRequest):
     client_ip: Optional[str] = None
     client_location: Optional[ClientLocation] = None
     employee: Optional[Employee] = None
-
-    def __init__(self, request: HttpRequest):
-        super().__init__()
-        self.__dict__.update(request.__dict__)

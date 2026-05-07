@@ -27,10 +27,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ["DEBUG"] == "true"
+DEBUG = os.environ["DEBUG"].lower() == "true"
 
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
 
+print(os.environ)
 # Application definition
 
 INSTALLED_APPS = [

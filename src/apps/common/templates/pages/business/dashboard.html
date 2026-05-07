@@ -1,0 +1,204 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Chronos - Dashboard Business</title>
+
+    <link rel="stylesheet" href="{% static 'business/css/dashboard.css' %}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">C</div>
+                <div>
+                    <p>Chronos</p>
+                    <strong>Business</strong>
+                </div>
+            </div>
+
+            <nav class="nav">
+                <button class="nav-item active" type="button">
+                    Empresas
+                </button>
+
+                <button class="nav-item" type="button">
+                    Funcionários
+                </button>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="header">
+                <div>
+                    <p class="eyebrow">Painel administrativo</p>
+                    <h1>Dashboard Business</h1>
+                </div>
+
+                <button class="btn-primary" type="button" onclick="openBusinessForm()">
+                    Nova empresa
+                </button>
+            </header>
+
+            <section id="message" class="message hidden"></section>
+
+            <section class="grid">
+                <section class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>Suas empresas</h2>
+                            <p>Gerencie as empresas vinculadas à sua conta.</p>
+                        </div>
+                    </div>
+
+                    <div id="business-list" class="list"></div>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2 id="employees-title">Funcionários</h2>
+                            <p id="employees-subtitle">Selecione uma empresa para visualizar.</p>
+                        </div>
+
+                        <button
+                            id="new-employee-button"
+                            class="btn-secondary hidden"
+                            type="button"
+                            onclick="openEmployeeForm()"
+                        >
+                            Novo funcionário
+                        </button>
+                    </div>
+
+                    <div id="employee-list" class="list empty">
+                        Nenhuma empresa selecionada.
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Empresa -->
+    <dialog id="business-dialog" class="dialog">
+        <form id="business-form" class="form" onsubmit="submitBusiness(event)">
+            {% csrf_token %}
+
+            <div class="dialog-header">
+                <h2 id="business-form-title">Nova empresa</h2>
+                <button type="button" class="btn-icon" onclick="closeBusinessForm()">×</button>
+            </div>
+
+            <input type="hidden" id="business-uuid">
+
+            <div class="field">
+                <label for="business-name">Nome</label>
+                <input id="business-name" name="name" type="text" required>
+            </div>
+
+            <div class="field">
+                <label for="business-summary">Resumo</label>
+                <input id="business-summary" name="summary" type="text">
+            </div>
+
+            <div class="field">
+                <label for="business-picture">Logo</label>
+                <input id="business-picture" name="picture" type="file" accept="image/*">
+            </div>
+
+            <div class="form-grid">
+                <label class="checkbox">
+                    <input id="restricted-network" type="checkbox">
+                    Restringir por rede
+                </label>
+
+                <label class="checkbox">
+                    <input id="restricted-gps" type="checkbox">
+                    Restringir por GPS
+                </label>
+            </div>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="business-lat">Latitude</label>
+                    <input id="business-lat" type="number" step="any">
+                </div>
+
+                <div class="field">
+                    <label for="business-lng">Longitude</label>
+                    <input id="business-lng" type="number" step="any">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="allowed-radius">Raio permitido em metros</label>
+                <input id="allowed-radius" type="number" min="1" value="100">
+            </div>
+
+            <div class="field">
+                <label for="allowed-ips">IPs permitidos</label>
+                <input
+                    id="allowed-ips"
+                    type="text"
+                    placeholder="Ex: 192.168.1.60, 10.0.0.1"
+                >
+            </div>
+
+            <button class="btn-primary" type="submit">
+                Salvar empresa
+            </button>
+        </form>
+    </dialog>
+
+    <!-- Modal Funcionário -->
+    <dialog id="employee-dialog" class="dialog">
+        <form id="employee-form" class="form" onsubmit="submitEmployee(event)">
+            {% csrf_token %}
+
+            <div class="dialog-header">
+                <h2 id="employee-form-title">Novo funcionário</h2>
+                <button type="button" class="btn-icon" onclick="closeEmployeeForm()">×</button>
+            </div>
+
+            <input type="hidden" id="employee-uuid">
+
+            <div class="field">
+                <label for="employee-name">Nome</label>
+                <input id="employee-name" type="text" required>
+            </div>
+
+            <div class="field">
+                <label for="employee-register">Matrícula</label>
+                <input id="employee-register" type="text" required>
+            </div>
+
+            <div class="field">
+                <label for="employee-picture">Foto</label>
+                <input id="employee-picture" type="file" accept="image/*">
+            </div>
+
+            <label class="checkbox">
+                <input id="employee-is-active" type="checkbox" checked>
+                Funcionário ativo
+            </label>
+
+            <button class="btn-primary" type="submit">
+                Salvar funcionário
+            </button>
+        </form>
+    </dialog>
+
+    <script>
+        window.CHRONOS_CONFIG = {
+            businessURL: "/api/business/",
+        };
+    </script>
+
+    <script src="{% static 'business/js/dashboard.js' %}"></script>
+</body>
+</html>

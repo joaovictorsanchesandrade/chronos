@@ -26,6 +26,7 @@ urlpatterns = [
     path("api/business/", include("apps.business.api.urls")),
     path("api/employees/", include("apps.employee.api.urls")),
     path("employees/", include("apps.employee.pages.urls")),
+    path("business/", include("apps.business.pages.urls")),
     path("i/<str:code>/", ShortLinkView.as_view(), name="clocking-shortlink"),
 ]
 

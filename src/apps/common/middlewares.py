@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpRequest
 from django.utils.translation import gettext as _
-from typing import Optional
+from typing import Optional, cast
 from apps.common.types import ApplicationRequest, ClientLocation
 
 
@@ -11,7 +11,7 @@ class ApplicationRequestMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest):
-        request = ApplicationRequest(request)
+        request = cast(ApplicationRequest, request)
         return self.get_response(request)
 
 

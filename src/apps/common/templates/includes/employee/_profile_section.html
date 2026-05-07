@@ -7,21 +7,36 @@
 
         <span id="session-status" class="status-pill idle">
             <span class="status-dot" aria-hidden="true"></span>
-            <span id="session-status-text">Sem jornada</span>
+
+            <span id="session-status-text">
+                Sem jornada
+            </span>
         </span>
     </div>
 
-    <section id="session-card" class="session-card empty" aria-label="Jornada atual">
+    <section
+        id="session-card"
+        class="session-card empty"
+        aria-label="Jornada atual"
+    >
         <div class="session-card-header">
             <div>
-                <p class="session-kicker">Jornada atual</p>
+                <p class="session-kicker">
+                    Jornada atual
+                </p>
 
-                <strong id="session-title" class="session-title">
+                <strong
+                    id="session-title"
+                    class="session-title"
+                >
                     Nenhuma jornada iniciada
                 </strong>
             </div>
 
-            <strong id="session-duration" class="session-duration">
+            <strong
+                id="session-duration"
+                class="session-duration"
+            >
                 00h00
             </strong>
         </div>
@@ -29,12 +44,18 @@
         <div class="session-stats">
             <div class="session-stat">
                 <span>Início</span>
-                <strong id="session-start">--:--</strong>
+
+                <strong id="session-start">
+                    --:--
+                </strong>
             </div>
 
             <div class="session-stat">
                 <span>Último registro</span>
-                <strong id="session-last">Nenhum</strong>
+
+                <strong id="session-last">
+                    Nenhum
+                </strong>
             </div>
         </div>
 
@@ -46,6 +67,7 @@
     </section>
 
     <div class="grid">
+        <!-- ENTRADA -->
         <button
             class="btn-action entry"
             type="button"
@@ -53,18 +75,28 @@
             onclick="clocking('entry')"
         >
             <span class="action-top">
-                <span class="action-code">EN</span>
-                <span class="action-line" aria-hidden="true"></span>
+                <span class="action-code">
+                    EN
+                </span>
+
+                <span
+                    class="action-line"
+                    aria-hidden="true"
+                ></span>
             </span>
 
             <span>
-                <span class="btn-title">Entrada</span>
+                <span class="btn-title">
+                    Entrada
+                </span>
+
                 <span class="btn-subtitle">
                     Iniciar turno
                 </span>
             </span>
         </button>
 
+        <!-- INTERVALO -->
         <button
             class="btn-action break-start"
             type="button"
@@ -72,18 +104,28 @@
             onclick="clocking('break_start')"
         >
             <span class="action-top">
-                <span class="action-code">IN</span>
-                <span class="action-line" aria-hidden="true"></span>
+                <span class="action-code">
+                    IN
+                </span>
+
+                <span
+                    class="action-line"
+                    aria-hidden="true"
+                ></span>
             </span>
 
             <span>
-                <span class="btn-title">Intervalo</span>
+                <span class="btn-title">
+                    Intervalo
+                </span>
+
                 <span class="btn-subtitle">
                     Pausar jornada
                 </span>
             </span>
         </button>
 
+        <!-- VOLTA -->
         <button
             class="btn-action break-end"
             type="button"
@@ -91,18 +133,28 @@
             onclick="clocking('break_end')"
         >
             <span class="action-top">
-                <span class="action-code">VO</span>
-                <span class="action-line" aria-hidden="true"></span>
+                <span class="action-code">
+                    VO
+                </span>
+
+                <span
+                    class="action-line"
+                    aria-hidden="true"
+                ></span>
             </span>
 
             <span>
-                <span class="btn-title">Volta</span>
+                <span class="btn-title">
+                    Volta
+                </span>
+
                 <span class="btn-subtitle">
                     Retomar turno
                 </span>
             </span>
         </button>
 
+        <!-- SAÍDA -->
         <button
             class="btn-action exit"
             type="button"
@@ -110,12 +162,21 @@
             onclick="clocking('exit')"
         >
             <span class="action-top">
-                <span class="action-code">SA</span>
-                <span class="action-line" aria-hidden="true"></span>
+                <span class="action-code">
+                    SA
+                </span>
+
+                <span
+                    class="action-line"
+                    aria-hidden="true"
+                ></span>
             </span>
 
             <span>
-                <span class="btn-title">Saída</span>
+                <span class="btn-title">
+                    Saída
+                </span>
+
                 <span class="btn-subtitle">
                     Encerrar dia
                 </span>
