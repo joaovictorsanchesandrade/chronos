@@ -1,0 +1,25 @@
+<section id="login-section">
+    <div class="content-header">
+        <div>
+            <p class="eyebrow">Acesso do colaborador</p>
+            <h2>Entre para registrar</h2>
+        </div>
+        <span id="current-time" class="header-meta">--:--</span>
+    </div>
+
+    <form class="form" onsubmit="loginEmployee(event)">
+        {% csrf_token %}
+
+        <div class="field">
+            <label for="register">Matrícula</label>
+            <input id="register" name="register" type="text" autocomplete="username" placeholder="Digite sua matrícula" />
+        </div>
+
+        <div class="field">
+            <label for="pin">PIN</label>
+            <input id="pin" name="pin" type="password" autocomplete="current-password" placeholder="Digite seu PIN" />
+        </div>
+
+        <button class="btn-primary" type="submit">Entrar</button>
+    </form>
+</section>

@@ -1,0 +1,33 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ponto do Funcionário</title>
+
+    <link rel="stylesheet" href="{% static 'employee/css/clocking.css' %}">
+</head>
+
+<body>
+<div class="container">
+    {% include "includes/employee/_identity_panel.html" %}
+
+    <main class="content-panel">
+        {% include "includes/employee/_login_section.html" %}
+        {% include "includes/employee/_profile_section.html" %}
+        {% include "includes/employee/_message.html" %}
+    </main>
+</div>
+
+<script>
+    window.CHRONOS_CONFIG = {
+        businessUUID: "{{ public_uuid|escapejs }}",
+        profileURL: "{% url 'api-employee:me' %}",
+        clockingURL: "{% url 'api-employee:work-sessions' %}",
+    };
+</script>
+<script src="{% static 'employee/js/clocking.js' %}"></script>
+</body>
+</html>

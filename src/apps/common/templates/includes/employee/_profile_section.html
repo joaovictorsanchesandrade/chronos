@@ -1,0 +1,137 @@
+<section id="profile-section" class="work-view hidden">
+    <div class="content-header">
+        <div>
+            <p class="eyebrow">Jornada</p>
+            <h2>Bater ponto</h2>
+        </div>
+
+        <span id="session-status" class="status-pill idle">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="session-status-text">Sem jornada</span>
+        </span>
+    </div>
+
+    <section id="session-card" class="session-card empty" aria-label="Jornada atual">
+        <div class="session-card-header">
+            <div>
+                <p class="session-kicker">Jornada atual</p>
+
+                <strong id="session-title" class="session-title">
+                    Nenhuma jornada iniciada
+                </strong>
+            </div>
+
+            <strong id="session-duration" class="session-duration">
+                00h00
+            </strong>
+        </div>
+
+        <div class="session-stats">
+            <div class="session-stat">
+                <span>Início</span>
+                <strong id="session-start">--:--</strong>
+            </div>
+
+            <div class="session-stat">
+                <span>Último registro</span>
+                <strong id="session-last">Nenhum</strong>
+            </div>
+        </div>
+
+        <ol id="session-timeline" class="timeline">
+            <li class="timeline-empty">
+                Nenhum registro na jornada atual.
+            </li>
+        </ol>
+    </section>
+
+    <div class="grid">
+        <button
+            class="btn-action entry"
+            type="button"
+            data-record-type="entry"
+            onclick="clocking('entry')"
+        >
+            <span class="action-top">
+                <span class="action-code">EN</span>
+                <span class="action-line" aria-hidden="true"></span>
+            </span>
+
+            <span>
+                <span class="btn-title">Entrada</span>
+                <span class="btn-subtitle">
+                    Iniciar turno
+                </span>
+            </span>
+        </button>
+
+        <button
+            class="btn-action break-start"
+            type="button"
+            data-record-type="break_start"
+            onclick="clocking('break_start')"
+        >
+            <span class="action-top">
+                <span class="action-code">IN</span>
+                <span class="action-line" aria-hidden="true"></span>
+            </span>
+
+            <span>
+                <span class="btn-title">Intervalo</span>
+                <span class="btn-subtitle">
+                    Pausar jornada
+                </span>
+            </span>
+        </button>
+
+        <button
+            class="btn-action break-end"
+            type="button"
+            data-record-type="break_end"
+            onclick="clocking('break_end')"
+        >
+            <span class="action-top">
+                <span class="action-code">VO</span>
+                <span class="action-line" aria-hidden="true"></span>
+            </span>
+
+            <span>
+                <span class="btn-title">Volta</span>
+                <span class="btn-subtitle">
+                    Retomar turno
+                </span>
+            </span>
+        </button>
+
+        <button
+            class="btn-action exit"
+            type="button"
+            data-record-type="exit"
+            onclick="clocking('exit')"
+        >
+            <span class="action-top">
+                <span class="action-code">SA</span>
+                <span class="action-line" aria-hidden="true"></span>
+            </span>
+
+            <span>
+                <span class="btn-title">Saída</span>
+                <span class="btn-subtitle">
+                    Encerrar dia
+                </span>
+            </span>
+        </button>
+    </div>
+
+    <div class="session-footer">
+        <p id="current-date"></p>
+
+        <button
+            class="btn-ghost"
+            type="button"
+            onclick="logoutEmployee()"
+        >
+            Sair
+        </button>
+    </div>
+</section>

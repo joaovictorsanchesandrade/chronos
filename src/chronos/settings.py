@@ -30,7 +30,6 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = os.environ["DEBUG"] == "true"
 
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
-INTERNAL_IPS = ["127.0.0.1"]
 
 # Application definition
 

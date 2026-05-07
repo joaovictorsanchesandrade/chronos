@@ -13,7 +13,7 @@ class ClockingView(View):
             raise Http404()
         return render(
             request,
-            "employee/pages/clocking.html",
+            "pages/employee/clocking.html",
             {"public_uuid": business.public_uuid},
         )
 
