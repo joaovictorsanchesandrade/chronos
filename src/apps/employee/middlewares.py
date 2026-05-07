@@ -61,7 +61,7 @@ class EmployeeLocationMiddleware:
 
     def __call__(self, request: ApplicationRequest):
         employee: Optional[Employee] = request.employee
-        if employee and employee.business.restricted_gps:
+        if employee and employee.business.restricted_gps and request.method.upper() != "GET":
             if not request.client_location:
                 return JsonResponse(
                     {
@@ -119,7 +119,7 @@ class EmployeeNetworkMiddleware:
 
     def __call__(self, request: ApplicationRequest):
         employee: Optional[Employee] = request.employee
-        if employee:
+        if employee and request.method.upper() != "GET":
             business: Business = employee.business
             ip_allowed = business.ip_is_allowed(request.client_ip)
             if business.restricted_network and not ip_allowed:
