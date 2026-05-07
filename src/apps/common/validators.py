@@ -19,7 +19,6 @@ def validate_location(
 
     if accurancy and accurancy > 80:
         return False, None
-
     return distance <= allowed_radius_meters, distance
 
 
