@@ -24,13 +24,7 @@ class ClockingSerializer(serializers.Serializer):
 class BusinessSerializer(serializers.ModelSerializer):
     class Meta:
         model = Business
-        fields = (
-            "picture",
-            "name",
-            "summary",
-            "restricted_network",
-            "restricted_gps"
-        )
+        fields = ("picture", "name", "summary", "restricted_network", "restricted_gps")
         read_only_fields = fields
 
 
@@ -52,7 +46,7 @@ class TimeRecordsSerializer(serializers.ModelSerializer):
             "location_lat",
             "location_lng",
             "location_accuracy",
-            "distance_from_business_meters"
+            "distance_from_business_meters",
         )
 
 

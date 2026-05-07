@@ -53,6 +53,6 @@ class WorkSessionView(APIView):
             employee=request.employee,
             record_type=serializer.validated_data["record_type"],
             client_ip=request.client_ip,
-            client_location=request.client_location
+            client_location=request.client_location,
         )
         return Response(status=status.HTTP_201_CREATED)

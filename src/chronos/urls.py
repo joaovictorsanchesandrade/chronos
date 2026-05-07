@@ -19,14 +19,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from apps.employee.pages.views import short_link_view
+from apps.employee.pages.views import ShortLinkView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/business/", include("apps.business.api.urls")),
     path("api/employees/", include("apps.employee.api.urls")),
     path("employees/", include("apps.employee.pages.urls")),
-    path("i/<str:code>/", short_link_view, name="clocking-shortlink"),
+    path("i/<str:code>/", ShortLinkView.as_view(), name="clocking-shortlink"),
 ]
 
 if settings.DEBUG:
